@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Flachdach – 2D (PWA)</title>
+
+  <!-- PWA (Android/General) -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0b1020" />
+
+  <!-- PWA (Apple/iOS) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
+
+  <style>
+    :root{--bg:#0b1020;--panel:#131a33;--ink:#e8ecff;--muted:#a8b3d9;--house:#1b2b57;--roof:#253a7a;--stroke:#8aa4ff}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    .card{width:min(98vw,1200px);height:98vh;display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
+    h1{margin:0;font-size:clamp(18px,2.5vw,24px)} p{margin:0;color:var(--muted)}
+    .controls{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center}
+    input[type=range]{width:100%;touch-action:pan-y;height:28px}
+    .badge{background:#0f1630;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
+    .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+    .stage{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1 1 auto;min-height:0}
+    .view{position:relative;min-height:0;display:flex;flex-direction:column;gap:8px}
+    .pane{position:relative;flex:1 1 auto}
+    svg{width:100%;height:100%;min-height:260px;display:block;background:#0f1630;border-radius:12px}
+    .overlayLabel{position:absolute;left:0;top:0;transform:translate(-50%,-50%);pointer-events:none;font-size:32px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+    .svgTitle{font:600 22px system-ui,Segoe UI,Roboto,Arial; fill:#fff; text-anchor:middle; dominant-baseline:middle}
+    @media (max-width:900px){.stage{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Flachdach</h1>
+    <p>Draufsicht links, rechts Vorder- & Seitansicht. Feste ViewBox (20 m Referenz).</p>
+
+    <div class="controls">
+      <label for="egWidth">EG‑Breite (m)</label>
+      <input id="egWidth" type="range" min="5" max="20" value="12" step="0.1" />
+      <span id="egWidthOut" class="badge">12.0 m</span>
+
+      <label for="egLength">EG‑Länge (m)</label>
+      <input id="egLength" type="range" min="5" max="20" value="18" step="0.1" />
+      <span id="egLengthOut" class="badge">18.0 m</span>
+
+      <label for="ogWidth">DG‑Breite (m)</label>
+      <input id="ogWidth" type="range" min="1" max="12" value="8" step="0.1" />
+      <span id="ogWidthOut" class="badge">8.0 m</span>
+
+      <label for="ogLength">DG‑Länge (m)</label>
+      <input id="ogLength" type="range" min="1" max="18" value="12" step="0.1" />
+      <span id="ogLengthOut" class="badge">12.0 m</span>
+    </div>
+
+    <div class="row">
+      <span id="infoArea" class="badge">DG: 96.00 m² (44.4%) – EG: 216.00 m²</span>
+    </div>
+
+    <div class="stage">
+      <!-- Linke Spalte: Draufsicht -->
+      <div id="view2d" class="view" aria-label="Draufsicht (SVG)">
+        <div class="pane" id="panePlan">
+          <svg id="svgPlan" preserveAspectRatio="xMidYMid meet">
+            <text id="titlePlan" class="svgTitle">Draufsicht</text>
+            <rect id="eg" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
+            <rect id="og" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" opacity="1" cursor="grab"/>
+            <text id="fullLabel" x="0" y="0" style="display:none">Vollgeschoss</text>
+          </svg>
+          <div id="labelPlan" class="overlayLabel" style="display:none">Vollgeschoss</div>
+        </div>
+      </div>
+
+      <!-- Rechte Spalte: zwei Seitenansichten untereinander -->
+      <div class="view" aria-label="Seitenansichten">
+        <div class="pane" id="paneSideLong">
+          <svg id="svgSideLong" preserveAspectRatio="xMidYMid meet">
+            <text id="titleFront" class="svgTitle">Vorderansicht</text>
+            <line id="groundLong" stroke="#6b78a8" stroke-width="3"/>
+            <rect id="sideEGLong" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
+            <rect id="sideOGLong" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" cursor="grab"/>
+            <text id="labelSideLong" style="display:none">Vollgeschoss</text>
+          </svg>
+          <div id="labelSideLongHtml" class="overlayLabel" style="display:none">Vollgeschoss</div>
+        </div>
+        <div class="pane" id="paneSide">
+          <svg id="svgSide" preserveAspectRatio="xMidYMid meet">
+            <text id="titleSide" class="svgTitle">Seitansicht</text>
+            <line id="ground" stroke="#6b78a8" stroke-width="3"/>
+            <rect id="sideEG" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
+            <rect id="sideOG" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" cursor="grab"/>
+            <text id="labelSide" style="display:none">Vollgeschoss</text>
+          </svg>
+          <div id="labelSideHtml" class="overlayLabel" style="display:none">Vollgeschoss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+var $=function(id){return document.getElementById(id)};
+var egWInp=$("egWidth"), egLInp=$("egLength"), ogWInp=$("ogWidth"), ogLInp=$("ogLength");
+var egWOut=$("egWidthOut"), egLOut=$("egLengthOut"), ogWOut=$("ogWidthOut"), ogLOut=$("ogLengthOut");
+var info=$("infoArea");
+var svg=$("svgPlan"), eg=$("eg"), og=$("og"), labelSvg=$("fullLabel"), titlePlan=$("titlePlan");
+var svgSide=$("svgSide"), sideEG=$("sideEG"), sideOG=$("sideOG"), ground=$("ground"), labelSideSvg=$("labelSide"), titleSide=$("titleSide");
+var svgSideLong=$("svgSideLong"), sideEGLong=$("sideEGLong"), sideOGLong=$("sideOGLong"), groundLong=$("groundLong"), labelSideLongSvg=$("labelSideLong"), titleFront=$("titleFront");
+var labelPlan=$("labelPlan"), labelSideHtml=$("labelSideHtml"), labelSideLongHtml=$("labelSideLongHtml");
+
+// Maßstab & feste ViewBoxen
+var SCALE=0.01; // m pro Pixel => 1 m = 100 px
+var REF=20;     // Referenz 20 m
+var PAD=120;    // Rand (px)
+var H_EG=5.6, H_OG=2.8;
+
+function m2px(m){ return m / SCALE; }
+
+// Feste ViewBoxen
+var VB_PLAN = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(REF) };
+var VB_LEN  = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(H_EG+H_OG) };
+var VB_WID  = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(H_EG+H_OG) };
+
+svg.setAttribute('viewBox', `${VB_PLAN.x} ${VB_PLAN.y} ${VB_PLAN.w} ${VB_PLAN.h}`);
+svgSide.setAttribute('viewBox', `${VB_LEN.x} ${VB_LEN.y} ${VB_LEN.w} ${VB_LEN.h}`);
+svgSideLong.setAttribute('viewBox', `${VB_WID.x} ${VB_WID.y} ${VB_WID.w} ${VB_WID.h}`);
+
+// Titel mittig oben platzieren (weiß)
+var TITLE_Y = PAD * 0.5;
+function positionTitles(){
+  if(titlePlan){ titlePlan.setAttribute('x', VB_PLAN.w/2); titlePlan.setAttribute('y', TITLE_Y); }
+  if(titleFront){ titleFront.setAttribute('x', VB_WID.w/2); titleFront.setAttribute('y', TITLE_Y); }
+  if(titleSide){ titleSide.setAttribute('x', VB_LEN.w/2); titleSide.setAttribute('y', TITLE_Y); }
+}
+positionTitles();
+
+// Eingabezustand
+var EG_W=+egWInp.value, EG_L=+egLInp.value, OG_W=+ogWInp.value, OG_L=+ogLInp.value;
+var OG_X=(EG_L-OG_L)/2, OG_Y=(EG_W-OG_W)/2;
+
+function clampSizes(){ if(OG_W>EG_W){ OG_W=EG_W; ogWInp.value=OG_W; } if(OG_L>EG_L){ OG_L=EG_L; ogLInp.value=OG_L; } }
+function clampPosition(){ OG_X=Math.max(0,Math.min(OG_X,EG_L-OG_L)); OG_Y=Math.max(0,Math.min(OG_Y,EG_W-OG_W)); }
+function setAttr(el,o){ for(var k in o){ el.setAttribute(k,o[k]); } }
+
+function showLabel(){
+  var aEG=EG_W*EG_L, aOG=OG_W*OG_L, p=aEG? aOG/aEG*100 : 0;
+  info.textContent = `DG: ${aOG.toFixed(2)} m² (${p.toFixed(1)}%) – EG: ${aEG.toFixed(2)} m²`;
+  return p>=75;
+}
+
+function placeOverlay(labelEl, svgEl, cx, cy, show){
+  if(!labelEl) return;
+  var pt=svgEl.createSVGPoint(); pt.x=cx; pt.y=cy;
+  var screen=pt.matrixTransform(svgEl.getScreenCTM());
+  var rect=svgEl.getBoundingClientRect();
+  labelEl.style.left=(screen.x-rect.left)+"px";
+  labelEl.style.top=(screen.y-rect.top)+"px";
+  labelEl.style.display=show?"block":"none";
+}
+
+// Rendering
+function updatePlan(){
+  var originX = PAD + m2px((REF - EG_L)/2);
+  var originY = PAD + m2px((REF - EG_W)/2);
+  setAttr(eg,{x:originX, y:originY, width:m2px(EG_L), height:m2px(EG_W)});
+  setAttr(og,{x:originX + m2px(OG_X), y:originY + m2px(OG_Y), width:m2px(OG_L), height:m2px(OG_W)});
+  labelSvg.style.display='none';
+  var cx = originX + m2px(OG_X + OG_L/2);
+  var cy = originY + m2px(OG_Y + OG_W/2);
+  placeOverlay(labelPlan, svg, cx, cy, showLabel());
+}
+
+function updateSideLen(){
+  var originX = PAD + m2px((REF - EG_L)/2);
+  var groundY = PAD + m2px(H_EG + H_OG); // tief, sodass DG sichtbar ist
+  setAttr(ground,{x1:PAD-20, y1:groundY, x2:VB_LEN.w-(PAD-20), y2:groundY});
+  setAttr(sideEG,{x:originX, y:groundY - m2px(H_EG), width:m2px(EG_L), height:m2px(H_EG)});
+  var dgX = originX + m2px(OG_X);
+  var dgY = groundY - m2px(H_EG) - m2px(H_OG);
+  setAttr(sideOG,{x:dgX, y:dgY, width:m2px(OG_L), height:m2px(H_OG)});
+  placeOverlay(labelSideHtml, svgSide, dgX + m2px(OG_L/2), dgY + m2px(H_OG/2), showLabel());
+}
+
+function updateSideWid(){
+  var originX = PAD + m2px((REF - EG_W)/2);
+  var groundY = PAD + m2px(H_EG + H_OG); // tief, sodass DG sichtbar ist
+  setAttr(groundLong,{x1:PAD-20, y1:groundY, x2:VB_WID.w-(PAD-20), y2:groundY});
+  setAttr(sideEGLong,{x:originX, y:groundY - m2px(H_EG), width:m2px(EG_W), height:m2px(H_EG)});
+  var dgX = originX + m2px(OG_Y);
+  var dgY = groundY - m2px(H_EG) - m2px(H_OG);
+  setAttr(sideOGLong,{x:dgX, y:dgY, width:m2px(OG_W), height:m2px(H_OG)});
+  placeOverlay(labelSideLongHtml, svgSideLong, dgX + m2px(OG_W/2), dgY + m2px(H_OG/2), showLabel());
+}
+
+function updateAll(){
+  EG_W=+egWInp.value; egWOut.textContent=EG_W.toFixed(1)+' m';
+  EG_L=+egLInp.value; egLOut.textContent=EG_L.toFixed(1)+' m';
+  OG_W=+ogWInp.value; ogWOut.textContent=OG_W.toFixed(1)+' m';
+  OG_L=+ogLInp.value; ogLOut.textContent=OG_L.toFixed(1)+' m';
+  ogWInp.max=EG_W; ogLInp.max=EG_L;
+  clampSizes(); clampPosition();
+  updatePlan(); updateSideLen(); updateSideWid();
+}
+
+// Dragging (Plan)
+function svgPt(el,e){ var pt=el.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; return pt.matrixTransform(el.getScreenCTM().inverse()); }
+var dragging=false, dDX=0, dDY=0, planOriginX=0, planOriginY=0;
+og.addEventListener('pointerdown',function(e){
+  dragging=true; og.setPointerCapture(e.pointerId); og.style.cursor='grabbing';
+  planOriginX = PAD + m2px((REF - EG_L)/2);
+  planOriginY = PAD + m2px((REF - EG_W)/2);
+  var p = svgPt(svg,e);
+  dDX = p.x - (+og.getAttribute('x'));
+  dDY = p.y - (+og.getAttribute('y'));
+});
+og.addEventListener('pointermove',function(e){
+  if(!dragging) return; var p = svgPt(svg,e);
+  var newX = p.x - dDX; var newY = p.y - dDY;
+  OG_X = (newX - planOriginX) * SCALE; OG_Y = (newY - planOriginY) * SCALE;
+  clampPosition(); requestAnimationFrame(updateAll);
+});
+og.addEventListener('pointerup',function(e){ dragging=false; og.releasePointerCapture(e.pointerId); og.style.cursor='grab'; });
+
+// Dragging (Seiten) – Länge (OG_X)
+var dragLen={active:false, dx:0, originX:0};
+sideOG.addEventListener('pointerdown',function(e){
+  dragLen.active=true; sideOG.setPointerCapture(e.pointerId); sideOG.style.cursor='grabbing';
+  dragLen.originX = PAD + m2px((REF - EG_L)/2);
+  var p=svgPt(svgSide,e); dragLen.dx = p.x - (+sideOG.getAttribute('x'));
+});
+sideOG.addEventListener('pointermove',function(e){
+  if(!dragLen.active) return; var p=svgPt(svgSide,e);
+  var newX=p.x - dragLen.dx; OG_X = (newX - dragLen.originX) * SCALE; clampPosition(); requestAnimationFrame(updateAll);
+});
+sideOG.addEventListener('pointerup',function(e){ dragLen.active=false; sideOG.releasePointerCapture(e.pointerId); sideOG.style.cursor='grab'; });
+
+// Dragging (Seiten) – Breite (OG_Y)
+var dragWid={active:false, dx:0, originX:0};
+sideOGLong.addEventListener('pointerdown',function(e){
+  dragWid.active=true; sideOGLong.setPointerCapture(e.pointerId); sideOGLong.style.cursor='grabbing';
+  dragWid.originX = PAD + m2px((REF - EG_W)/2);
+  var p=svgPt(svgSideLong,e); dragWid.dx = p.x - (+sideOGLong.getAttribute('x'));
+});
+sideOGLong.addEventListener('pointermove',function(e){
+  if(!dragWid.active) return; var p=svgPt(svgSideLong,e);
+  var newX=p.x - dragWid.dx; OG_Y = (newX - dragWid.originX) * SCALE; clampPosition(); requestAnimationFrame(updateAll);
+});
+sideOGLong.addEventListener('pointerup',function(e){ dragWid.active=false; sideOGLong.releasePointerCapture(e.pointerId); sideOGLong.style.cursor='grab'; });
+
+[egWInp,egLInp,ogWInp,ogLInp].forEach(inp=>inp.addEventListener('input', updateAll));
+window.addEventListener('resize', ()=>{ positionTitles(); updatePlan(); updateSideLen(); updateSideWid(); });
+updateAll();
+</script>
+
+<!-- Service Worker Registrierung -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      function readyToActivate(sw) {
+        if (sw && sw.state === 'installed') {
+          if (navigator.serviceWorker.controller) {
+            sw.postMessage({ type: 'SKIP_WAITING' });
+          }
+        }
+      }
+      if (reg.waiting) readyToActivate(reg.waiting);
+      reg.addEventListener('updatefound', () => {
+        const sw = reg.installing;
+        sw && sw.addEventListener('statechange', () => readyToActivate(sw));
+      });
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    }).catch(console.error);
+  });
+}
+</script>
+</body>
+</html>
