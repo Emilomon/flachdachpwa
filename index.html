@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Flachdach – 2D (PWA)</title>
+  <title>Rammsondierungsprotokoll (DPL)</title>
 
   <!-- PWA (Android/General) -->
   <link rel="manifest" href="manifest.webmanifest" />
@@ -15,244 +15,314 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
 
   <style>
-    :root{--bg:#0b1020;--panel:#131a33;--ink:#e8ecff;--muted:#a8b3d9;--house:#1b2b57;--roof:#253a7a;--stroke:#8aa4ff}
+    :root{
+      --bg:#e9eef5;--panel:#ffffff;--panel-2:#f5f7fb;--ink:#172033;--muted:#50607f;--accent:#75a7ff;--grid:#d5dbe7;--stroke:#c1c9dd;--bar:#6fa2ff;
+    }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
-    body{height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif}
-    .card{width:min(98vw,1200px);height:98vh;display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
-    h1{margin:0;font-size:clamp(18px,2.5vw,24px)} p{margin:0;color:var(--muted)}
-    .controls{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center}
-    input[type=range]{width:100%;touch-action:pan-y;height:28px}
-    .badge{background:#0f1630;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
-    .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
-    .stage{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1 1 auto;min-height:0}
-    .view{position:relative;min-height:0;display:flex;flex-direction:column;gap:8px}
-    .pane{position:relative;flex:1 1 auto}
-    svg{width:100%;height:100%;min-height:260px;display:block;background:#0f1630;border-radius:12px}
-    .overlayLabel{position:absolute;left:0;top:0;transform:translate(-50%,-50%);pointer-events:none;font-size:32px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-    .svgTitle{font:600 22px system-ui,Segoe UI,Roboto,Arial; fill:#fff; text-anchor:middle; dominant-baseline:middle}
-    @media (max-width:900px){.stage{grid-template-columns:1fr}}
+    body{display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:10px}
+    .card{width:min(1180px,98vw);max-height:98vh;background:var(--panel);border:1px solid #d9e0ef;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 48px rgba(17,31,68,.12)}
+    header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
+    h1{margin:0;font-size:clamp(20px,3vw,26px)}
+    p{margin:0;color:var(--muted)}
+    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#3a74d7;margin-bottom:4px;font-weight:700}
+    .badges{display:flex;flex-wrap:wrap;gap:8px}
+    .badge{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:10px;padding:6px 10px;font-variant-numeric:tabular-nums;color:var(--ink)}
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:14px;min-height:0;flex:1 1 auto}
+    .panel{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
+    label{font-weight:700;color:var(--ink)}
+    textarea{width:100%;min-height:140px;resize:vertical;background:#fff;color:var(--ink);border:1px solid var(--stroke);border-radius:10px;padding:10px;font-size:14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .hint{color:var(--muted);font-size:14px;line-height:1.5}
+    button{appearance:none;background:linear-gradient(120deg,#5f91ff,#88b3ff);border:none;color:#0b1b3f;font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(95,145,255,.32);transition:transform .1s ease,box-shadow .1s ease}
+    button:active{transform:translateY(1px);box-shadow:0 4px 12px rgba(95,145,255,.32)}
+    .ghost{background:transparent;border:1px solid var(--stroke);color:var(--ink);box-shadow:none}
+    .grid-inputs{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:6px;max-height:320px;overflow:auto;padding:8px;background:#fff;border-radius:10px;border:1px solid var(--stroke)}
+    .depth-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 6px;background:#f5f7fb;border-radius:8px}
+    .depth-row label{font-weight:600;font-size:14px;color:var(--muted)}
+    .depth-row input{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--stroke);background:#fff;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}
+    .chart-wrap{flex:1 1 auto;min-height:0}
+    svg{width:100%;height:100%;min-height:560px;display:block;border-radius:12px;background:#fff;border:1px solid #d9e0ef}
+    .axis text{fill:#1d2a41;font-size:12px}
+    .axis line, .grid line{stroke:var(--grid)}
+    .grid line{stroke-dasharray:2 4}
+    .bar{fill:var(--bar);stroke:#4d7fd6;stroke-width:1}
+    .bar-value{fill:#1d2a41;font-size:12px;font-weight:700}
+    .depth-label{fill:#1d2a41;font-size:12px;text-anchor:end}
+    .title{fill:#1d2a41;font-size:16px;font-weight:800}
+    .legend{font-size:12px;fill:#1d2a41}
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+    .summary .badge{display:flex;flex-direction:column;gap:4px}
+    .summary strong{font-size:18px;color:var(--ink)}
+    @media (max-width:900px){.layout{grid-template-columns:1fr}.grid-inputs{max-height:220px}}
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Flachdach</h1>
-    <p>Draufsicht links, rechts Vorder- & Seitansicht. Feste ViewBox (20 m Referenz).</p>
+    <header>
+      <div>
+        <div class="eyebrow">Bodenkennwerte</div>
+        <h1>Rammsondierungsprotokoll</h1>
+        <p>Trage die Schlagzahlen pro 10&nbsp;cm ein (0&nbsp;m bis 3&nbsp;m). Das Diagramm wird automatisch aktualisiert.</p>
+      </div>
+      <div class="badges">
+        <div class="badge">DIN EN 22476‑2 · DPL</div>
+        <div class="badge" id="countBadge">0 / 30 Werte</div>
+      </div>
+    </header>
 
-    <div class="controls">
-      <label for="egWidth">EG‑Breite (m)</label>
-      <input id="egWidth" type="range" min="5" max="20" value="12" step="0.1" />
-      <span id="egWidthOut" class="badge">12.0 m</span>
-
-      <label for="egLength">EG‑Länge (m)</label>
-      <input id="egLength" type="range" min="5" max="20" value="18" step="0.1" />
-      <span id="egLengthOut" class="badge">18.0 m</span>
-
-      <label for="ogWidth">DG‑Breite (m)</label>
-      <input id="ogWidth" type="range" min="1" max="12" value="8" step="0.1" />
-      <span id="ogWidthOut" class="badge">8.0 m</span>
-
-      <label for="ogLength">DG‑Länge (m)</label>
-      <input id="ogLength" type="range" min="1" max="18" value="12" step="0.1" />
-      <span id="ogLengthOut" class="badge">12.0 m</span>
-    </div>
-
-    <div class="row">
-      <span id="infoArea" class="badge">DG: 96.00 m² (44.4%) – EG: 216.00 m²</span>
-    </div>
-
-    <div class="stage">
-      <!-- Linke Spalte: Draufsicht -->
-      <div id="view2d" class="view" aria-label="Draufsicht (SVG)">
-        <div class="pane" id="panePlan">
-          <svg id="svgPlan" preserveAspectRatio="xMidYMid meet">
-            <text id="titlePlan" class="svgTitle">Draufsicht</text>
-            <rect id="eg" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
-            <rect id="og" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" opacity="1" cursor="grab"/>
-            <text id="fullLabel" x="0" y="0" style="display:none">Vollgeschoss</text>
-          </svg>
-          <div id="labelPlan" class="overlayLabel" style="display:none">Vollgeschoss</div>
+    <div class="layout">
+      <div class="panel" aria-label="Eingabe">
+        <div>
+          <label for="inputField">Schlagzahlen (N10) einfügen</label>
+          <textarea id="inputField" placeholder="Beispiel: 6 7 9 12 15 18 ..."></textarea>
+          <p class="hint">Zahlen werden in der Reihenfolge von 0,1&nbsp;m bis 3,0&nbsp;m gelesen. Trenne Werte mit Leerzeichen, Zeilenumbrüchen oder Kommata.</p>
+        </div>
+        <div class="grid-inputs" id="depthInputs" aria-label="Tabelle der Schlagzahlen"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <button id="sampleBtn" type="button">Beispieldaten laden</button>
+          <button id="clearBtn" type="button" class="ghost">Zurücksetzen</button>
         </div>
       </div>
 
-      <!-- Rechte Spalte: zwei Seitenansichten untereinander -->
-      <div class="view" aria-label="Seitenansichten">
-        <div class="pane" id="paneSideLong">
-          <svg id="svgSideLong" preserveAspectRatio="xMidYMid meet">
-            <text id="titleFront" class="svgTitle">Vorderansicht</text>
-            <line id="groundLong" stroke="#6b78a8" stroke-width="3"/>
-            <rect id="sideEGLong" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
-            <rect id="sideOGLong" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" cursor="grab"/>
-            <text id="labelSideLong" style="display:none">Vollgeschoss</text>
-          </svg>
-          <div id="labelSideLongHtml" class="overlayLabel" style="display:none">Vollgeschoss</div>
-        </div>
-        <div class="pane" id="paneSide">
-          <svg id="svgSide" preserveAspectRatio="xMidYMid meet">
-            <text id="titleSide" class="svgTitle">Seitansicht</text>
-            <line id="ground" stroke="#6b78a8" stroke-width="3"/>
-            <rect id="sideEG" fill="var(--house)" stroke="var(--stroke)" stroke-width="3"/>
-            <rect id="sideOG" fill="var(--roof)" stroke="var(--stroke)" stroke-width="3" cursor="grab"/>
-            <text id="labelSide" style="display:none">Vollgeschoss</text>
-          </svg>
-          <div id="labelSideHtml" class="overlayLabel" style="display:none">Vollgeschoss</div>
+      <div class="panel chart-wrap" aria-label="Diagramm">
+        <svg id="chart" role="img" aria-label="Rammsondierungsprotokoll Diagramm"></svg>
+        <div class="summary" aria-live="polite">
+          <div class="badge"><span>Tiefe</span><strong>0 – 3,0 m</strong></div>
+          <div class="badge"><span>Max. Schlagzahl</span><strong id="maxBadge">–</strong></div>
+          <div class="badge"><span>Durchschnitt</span><strong id="avgBadge">–</strong></div>
+          <div class="badge"><span>Letzter Wert (3,0 m)</span><strong id="lastBadge">–</strong></div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-var $=function(id){return document.getElementById(id)};
-var egWInp=$("egWidth"), egLInp=$("egLength"), ogWInp=$("ogWidth"), ogLInp=$("ogLength");
-var egWOut=$("egWidthOut"), egLOut=$("egLengthOut"), ogWOut=$("ogWidthOut"), ogLOut=$("ogLengthOut");
-var info=$("infoArea");
-var svg=$("svgPlan"), eg=$("eg"), og=$("og"), labelSvg=$("fullLabel"), titlePlan=$("titlePlan");
-var svgSide=$("svgSide"), sideEG=$("sideEG"), sideOG=$("sideOG"), ground=$("ground"), labelSideSvg=$("labelSide"), titleSide=$("titleSide");
-var svgSideLong=$("svgSideLong"), sideEGLong=$("sideEGLong"), sideOGLong=$("sideOGLong"), groundLong=$("groundLong"), labelSideLongSvg=$("labelSideLong"), titleFront=$("titleFront");
-var labelPlan=$("labelPlan"), labelSideHtml=$("labelSideHtml"), labelSideLongHtml=$("labelSideLongHtml");
+(function(){
+  const depthStep = 0.1;
+  const depthCount = 30; // 0.1 m bis 3.0 m
+  const values = new Array(depthCount).fill(null);
 
-// Maßstab & feste ViewBoxen
-var SCALE=0.01; // m pro Pixel => 1 m = 100 px
-var REF=20;     // Referenz 20 m
-var PAD=120;    // Rand (px)
-var H_EG=5.6, H_OG=2.8;
+  const textarea = document.getElementById('inputField');
+  const grid = document.getElementById('depthInputs');
+  const chart = document.getElementById('chart');
+  const countBadge = document.getElementById('countBadge');
+  const maxBadge = document.getElementById('maxBadge');
+  const avgBadge = document.getElementById('avgBadge');
+  const lastBadge = document.getElementById('lastBadge');
 
-function m2px(m){ return m / SCALE; }
+  function formatNumber(n){ return Number.isFinite(n) ? n.toFixed(0) : '–'; }
 
-// Feste ViewBoxen
-var VB_PLAN = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(REF) };
-var VB_LEN  = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(H_EG+H_OG) };
-var VB_WID  = { x:0, y:0, w: PAD*2 + m2px(REF), h: PAD*2 + m2px(H_EG+H_OG) };
+  function buildGrid(){
+    grid.innerHTML = '';
+    for(let i=0;i<depthCount;i++){
+      const depth = ((i+1)*depthStep).toFixed(1);
+      const row = document.createElement('div');
+      row.className = 'depth-row';
+      const lab = document.createElement('label');
+      lab.textContent = `${depth} m`;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = '0';
+      input.step = '1';
+      input.placeholder = '–';
+      input.dataset.index = i;
+      input.addEventListener('input', () => {
+        const v = input.value === '' ? null : Number(input.value);
+        values[i] = Number.isFinite(v) ? v : null;
+        syncTextarea();
+        render();
+      });
+      row.append(lab, input);
+      grid.appendChild(row);
+    }
+  }
 
-svg.setAttribute('viewBox', `${VB_PLAN.x} ${VB_PLAN.y} ${VB_PLAN.w} ${VB_PLAN.h}`);
-svgSide.setAttribute('viewBox', `${VB_LEN.x} ${VB_LEN.y} ${VB_LEN.w} ${VB_LEN.h}`);
-svgSideLong.setAttribute('viewBox', `${VB_WID.x} ${VB_WID.y} ${VB_WID.w} ${VB_WID.h}`);
+  function syncInputs(){
+    const inputs = grid.querySelectorAll('input');
+    inputs.forEach(inp => {
+      const i = Number(inp.dataset.index);
+      inp.value = values[i] ?? '';
+    });
+  }
 
-// Titel mittig oben platzieren (weiß)
-var TITLE_Y = PAD * 0.5;
-function positionTitles(){
-  if(titlePlan){ titlePlan.setAttribute('x', VB_PLAN.w/2); titlePlan.setAttribute('y', TITLE_Y); }
-  if(titleFront){ titleFront.setAttribute('x', VB_WID.w/2); titleFront.setAttribute('y', TITLE_Y); }
-  if(titleSide){ titleSide.setAttribute('x', VB_LEN.w/2); titleSide.setAttribute('y', TITLE_Y); }
-}
-positionTitles();
+  function syncTextarea(){
+    const compact = values.map(v => Number.isFinite(v) ? v : '-').join(' ');
+    textarea.value = compact;
+  }
 
-// Eingabezustand
-var EG_W=+egWInp.value, EG_L=+egLInp.value, OG_W=+ogWInp.value, OG_L=+ogLInp.value;
-var OG_X=(EG_L-OG_L)/2, OG_Y=(EG_W-OG_W)/2;
+  function parseTextarea(){
+    const raw = textarea.value.trim();
+    const parts = raw.split(/[,\s]+/).filter(Boolean);
+    for(let i=0;i<depthCount;i++){
+      const token = parts[i];
+      if(token === undefined || token === '-') { values[i] = null; continue; }
+      const num = Number(token);
+      values[i] = Number.isFinite(num) ? num : null;
+    }
+    syncInputs();
+    render();
+  }
 
-function clampSizes(){ if(OG_W>EG_W){ OG_W=EG_W; ogWInp.value=OG_W; } if(OG_L>EG_L){ OG_L=EG_L; ogLInp.value=OG_L; } }
-function clampPosition(){ OG_X=Math.max(0,Math.min(OG_X,EG_L-OG_L)); OG_Y=Math.max(0,Math.min(OG_Y,EG_W-OG_W)); }
-function setAttr(el,o){ for(var k in o){ el.setAttribute(k,o[k]); } }
+  function loadSample(){
+    const sample = [6,7,9,12,15,18,20,22,19,17,14,12,11,12,14,15,17,20,26,31,36,42,48,52,58,62,64,66,66,66];
+    sample.forEach((v,i)=>{ values[i]=v; });
+    syncInputs();
+    syncTextarea();
+    render();
+  }
 
-function showLabel(){
-  var aEG=EG_W*EG_L, aOG=OG_W*OG_L, p=aEG? aOG/aEG*100 : 0;
-  info.textContent = `DG: ${aOG.toFixed(2)} m² (${p.toFixed(1)}%) – EG: ${aEG.toFixed(2)} m²`;
-  return p>=75;
-}
+  function clearAll(){
+    values.fill(null);
+    syncInputs();
+    syncTextarea();
+    render();
+  }
 
-function placeOverlay(labelEl, svgEl, cx, cy, show){
-  if(!labelEl) return;
-  var pt=svgEl.createSVGPoint(); pt.x=cx; pt.y=cy;
-  var screen=pt.matrixTransform(svgEl.getScreenCTM());
-  var rect=svgEl.getBoundingClientRect();
-  labelEl.style.left=(screen.x-rect.left)+"px";
-  labelEl.style.top=(screen.y-rect.top)+"px";
-  labelEl.style.display=show?"block":"none";
-}
+  function render(){
+    const width = chart.clientWidth || 940;
+    const height = chart.clientHeight || 640;
+    const margin = {top:40,right:80,bottom:56,left:96};
+    const plotW = width - margin.left - margin.right;
+    const plotH = height - margin.top - margin.bottom;
+    const barHeight = Math.min(20, plotH / depthCount * 0.82);
+    const barGap = (plotH / depthCount) - barHeight;
+    chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    chart.innerHTML = '';
 
-// Rendering
-function updatePlan(){
-  var originX = PAD + m2px((REF - EG_L)/2);
-  var originY = PAD + m2px((REF - EG_W)/2);
-  setAttr(eg,{x:originX, y:originY, width:m2px(EG_L), height:m2px(EG_W)});
-  setAttr(og,{x:originX + m2px(OG_X), y:originY + m2px(OG_Y), width:m2px(OG_L), height:m2px(OG_W)});
-  labelSvg.style.display='none';
-  var cx = originX + m2px(OG_X + OG_L/2);
-  var cy = originY + m2px(OG_Y + OG_W/2);
-  placeOverlay(labelPlan, svg, cx, cy, showLabel());
-}
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    chart.appendChild(g);
 
-function updateSideLen(){
-  var originX = PAD + m2px((REF - EG_L)/2);
-  var groundY = PAD + m2px(H_EG + H_OG); // tief, sodass DG sichtbar ist
-  setAttr(ground,{x1:PAD-20, y1:groundY, x2:VB_LEN.w-(PAD-20), y2:groundY});
-  setAttr(sideEG,{x:originX, y:groundY - m2px(H_EG), width:m2px(EG_L), height:m2px(H_EG)});
-  var dgX = originX + m2px(OG_X);
-  var dgY = groundY - m2px(H_EG) - m2px(H_OG);
-  setAttr(sideOG,{x:dgX, y:dgY, width:m2px(OG_L), height:m2px(H_OG)});
-  placeOverlay(labelSideHtml, svgSide, dgX + m2px(OG_L/2), dgY + m2px(H_OG/2), showLabel());
-}
+    const maxVal = values.reduce((m,v)=>Number.isFinite(v)?Math.max(m,v):m,0);
+    const xMax = Math.max(10, Math.ceil((maxVal+4)/5)*5 || 50);
+    const xScale = v => margin.left + (v/xMax)*plotW;
+    const yScale = i => margin.top + i*(plotH/depthCount);
 
-function updateSideWid(){
-  var originX = PAD + m2px((REF - EG_W)/2);
-  var groundY = PAD + m2px(H_EG + H_OG); // tief, sodass DG sichtbar ist
-  setAttr(groundLong,{x1:PAD-20, y1:groundY, x2:VB_WID.w-(PAD-20), y2:groundY});
-  setAttr(sideEGLong,{x:originX, y:groundY - m2px(H_EG), width:m2px(EG_W), height:m2px(H_EG)});
-  var dgX = originX + m2px(OG_Y);
-  var dgY = groundY - m2px(H_EG) - m2px(H_OG);
-  setAttr(sideOGLong,{x:dgX, y:dgY, width:m2px(OG_W), height:m2px(H_OG)});
-  placeOverlay(labelSideLongHtml, svgSideLong, dgX + m2px(OG_W/2), dgY + m2px(H_OG/2), showLabel());
-}
+    // Grid + axes
+    const gridG = document.createElementNS('http://www.w3.org/2000/svg','g');
+    gridG.setAttribute('class','grid');
 
-function updateAll(){
-  EG_W=+egWInp.value; egWOut.textContent=EG_W.toFixed(1)+' m';
-  EG_L=+egLInp.value; egLOut.textContent=EG_L.toFixed(1)+' m';
-  OG_W=+ogWInp.value; ogWOut.textContent=OG_W.toFixed(1)+' m';
-  OG_L=+ogLInp.value; ogLOut.textContent=OG_L.toFixed(1)+' m';
-  ogWInp.max=EG_W; ogLInp.max=EG_L;
-  clampSizes(); clampPosition();
-  updatePlan(); updateSideLen(); updateSideWid();
-}
+    for(let i=0;i<=depthCount;i++){
+      const y = yScale(i);
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', margin.left);
+      line.setAttribute('x2', width - margin.right);
+      line.setAttribute('y1', y);
+      line.setAttribute('y2', y);
+      gridG.appendChild(line);
 
-// Dragging (Plan)
-function svgPt(el,e){ var pt=el.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; return pt.matrixTransform(el.getScreenCTM().inverse()); }
-var dragging=false, dDX=0, dDY=0, planOriginX=0, planOriginY=0;
-og.addEventListener('pointerdown',function(e){
-  dragging=true; og.setPointerCapture(e.pointerId); og.style.cursor='grabbing';
-  planOriginX = PAD + m2px((REF - EG_L)/2);
-  planOriginY = PAD + m2px((REF - EG_W)/2);
-  var p = svgPt(svg,e);
-  dDX = p.x - (+og.getAttribute('x'));
-  dDY = p.y - (+og.getAttribute('y'));
-});
-og.addEventListener('pointermove',function(e){
-  if(!dragging) return; var p = svgPt(svg,e);
-  var newX = p.x - dDX; var newY = p.y - dDY;
-  OG_X = (newX - planOriginX) * SCALE; OG_Y = (newY - planOriginY) * SCALE;
-  clampPosition(); requestAnimationFrame(updateAll);
-});
-og.addEventListener('pointerup',function(e){ dragging=false; og.releasePointerCapture(e.pointerId); og.style.cursor='grab'; });
+      if(i===0){
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        txt.setAttribute('x', margin.left - 10);
+        txt.setAttribute('y', y + barHeight/2);
+        txt.setAttribute('class','depth-label');
+        txt.textContent = '0.0';
+        gridG.appendChild(txt);
+      }
 
-// Dragging (Seiten) – Länge (OG_X)
-var dragLen={active:false, dx:0, originX:0};
-sideOG.addEventListener('pointerdown',function(e){
-  dragLen.active=true; sideOG.setPointerCapture(e.pointerId); sideOG.style.cursor='grabbing';
-  dragLen.originX = PAD + m2px((REF - EG_L)/2);
-  var p=svgPt(svgSide,e); dragLen.dx = p.x - (+sideOG.getAttribute('x'));
-});
-sideOG.addEventListener('pointermove',function(e){
-  if(!dragLen.active) return; var p=svgPt(svgSide,e);
-  var newX=p.x - dragLen.dx; OG_X = (newX - dragLen.originX) * SCALE; clampPosition(); requestAnimationFrame(updateAll);
-});
-sideOG.addEventListener('pointerup',function(e){ dragLen.active=false; sideOG.releasePointerCapture(e.pointerId); sideOG.style.cursor='grab'; });
+      if(i>0 && i%2===0){
+        const depth = (i*depthStep).toFixed(1);
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        txt.setAttribute('x', margin.left - 10);
+        txt.setAttribute('y', y - barGap/2 + barHeight/2 + 4);
+        txt.setAttribute('class','depth-label');
+        txt.textContent = depth;
+        gridG.appendChild(txt);
+      }
+    }
 
-// Dragging (Seiten) – Breite (OG_Y)
-var dragWid={active:false, dx:0, originX:0};
-sideOGLong.addEventListener('pointerdown',function(e){
-  dragWid.active=true; sideOGLong.setPointerCapture(e.pointerId); sideOGLong.style.cursor='grabbing';
-  dragWid.originX = PAD + m2px((REF - EG_W)/2);
-  var p=svgPt(svgSideLong,e); dragWid.dx = p.x - (+sideOGLong.getAttribute('x'));
-});
-sideOGLong.addEventListener('pointermove',function(e){
-  if(!dragWid.active) return; var p=svgPt(svgSideLong,e);
-  var newX=p.x - dragWid.dx; OG_Y = (newX - dragWid.originX) * SCALE; clampPosition(); requestAnimationFrame(updateAll);
-});
-sideOGLong.addEventListener('pointerup',function(e){ dragWid.active=false; sideOGLong.releasePointerCapture(e.pointerId); sideOGLong.style.cursor='grab'; });
+    const stepX = 5;
+    for(let x=0; x<=xMax; x+=stepX){
+      const vx = xScale(x);
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', vx);
+      line.setAttribute('x2', vx);
+      line.setAttribute('y1', margin.top);
+      line.setAttribute('y2', margin.top + plotH);
+      gridG.appendChild(line);
 
-[egWInp,egLInp,ogWInp,ogLInp].forEach(inp=>inp.addEventListener('input', updateAll));
-window.addEventListener('resize', ()=>{ positionTitles(); updatePlan(); updateSideLen(); updateSideWid(); });
-updateAll();
+      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x', vx);
+      txt.setAttribute('y', margin.top + plotH + 18);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('class','axis');
+      txt.textContent = x.toString();
+      gridG.appendChild(txt);
+    }
+
+    const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+    axisLine.setAttribute('x1', margin.left);
+    axisLine.setAttribute('x2', margin.left);
+    axisLine.setAttribute('y1', margin.top);
+    axisLine.setAttribute('y2', margin.top + plotH);
+    axisLine.setAttribute('stroke', '#8a94a8');
+    axisLine.setAttribute('stroke-width','1.5');
+    gridG.appendChild(axisLine);
+
+    g.appendChild(gridG);
+
+    // Labels
+    const title = document.createElementNS('http://www.w3.org/2000/svg','text');
+    title.setAttribute('x', margin.left + plotW/2);
+    title.setAttribute('y', 24);
+    title.setAttribute('class','title');
+    title.setAttribute('text-anchor','middle');
+    title.textContent = 'Rammsondierung – Schläge / 10 cm Eindringtiefe (N10)';
+    g.appendChild(title);
+
+    const axisY = document.createElementNS('http://www.w3.org/2000/svg','text');
+    axisY.setAttribute('x', margin.left - 18);
+    axisY.setAttribute('y', margin.top - 12);
+    axisY.setAttribute('class','legend');
+    axisY.setAttribute('text-anchor','end');
+    axisY.textContent = 'Tiefe [m]';
+    g.appendChild(axisY);
+
+    const axisX = document.createElementNS('http://www.w3.org/2000/svg','text');
+    axisX.setAttribute('x', margin.left + plotW/2);
+    axisX.setAttribute('y', height - 10);
+    axisX.setAttribute('class','legend');
+    axisX.setAttribute('text-anchor','middle');
+    axisX.textContent = 'Schläge / 10 cm Eindringtiefe (N10)';
+    g.appendChild(axisX);
+
+    // Bars
+    values.forEach((v,idx)=>{
+      if(!Number.isFinite(v)) return;
+      const y = yScale(idx) + barGap/2;
+      const x1 = margin.left;
+      const x2 = xScale(v);
+      const bar = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      bar.setAttribute('x', x1);
+      bar.setAttribute('y', y);
+      bar.setAttribute('width', Math.max(2, x2 - x1));
+      bar.setAttribute('height', barHeight);
+      bar.setAttribute('class','bar');
+      g.appendChild(bar);
+
+      const val = document.createElementNS('http://www.w3.org/2000/svg','text');
+      val.setAttribute('x', x2 + 10);
+      val.setAttribute('y', y + barHeight/2 + 4);
+      val.setAttribute('class','bar-value');
+      val.textContent = v.toString();
+      g.appendChild(val);
+    });
+
+    // Stats
+    const filled = values.filter(v=>Number.isFinite(v));
+    const avg = filled.length ? filled.reduce((a,b)=>a+b,0)/filled.length : null;
+    countBadge.textContent = `${filled.length} / ${depthCount} Werte`;
+    maxBadge.textContent = formatNumber(maxVal || null);
+    avgBadge.textContent = formatNumber(avg);
+    lastBadge.textContent = formatNumber(values[depthCount-1]);
+  }
+
+  textarea.addEventListener('input', parseTextarea);
+  document.getElementById('sampleBtn').addEventListener('click', loadSample);
+  document.getElementById('clearBtn').addEventListener('click', clearAll);
+
+  buildGrid();
+  render();
+})();
 </script>
 
 <!-- Service Worker Registrierung -->
