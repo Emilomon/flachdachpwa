@@ -1,24 +1,23 @@
-# Flachdach – PWA (iOS/Apple ready)
+# Rammsondierung – PWA
 
-Interaktive 2D-App zur Visualisierung (Draufsicht, Vorder- & Seitansicht).
-- Feste SVG-ViewBox (20 m Referenz), Haus skaliert innerhalb des Rahmens
-- DG in allen Ansichten verschiebbar (Clamping)
-- „Vollgeschoss“-Overlay in fixer Bildschirmgröße
-- PWA: Manifest + Service Worker, Apple-Meta-Tags, Apple Touch Icon
+Kompakte Web-App zur schnellen Auswertung einer leichten Rammsondierung (DPL) bis 3,0 m Tiefe.
+
+## Funktionen
+- Eingabe der Schlagzahlen pro 10 cm als Tabelle oder Freitext
+- Automatisches SVG-Diagramm mit Tiefenskala und Schlägen (N10)
+- Kennzahlen (maximaler Wert, Durchschnitt, letzter Messpunkt)
+- PWA-ready: Manifest, Service Worker, Offline-Seite und Apple-Meta-Tags
+
+## Nutzung
+1. Zahlen pro 10 cm eingeben oder Beispieldaten laden.
+2. Diagramm wird direkt aktualisiert; fehlende Werte bleiben leer.
+3. App lässt sich als PWA installieren (Homescreen, offline-fähig).
 
 ## Dateien
-- `index.html` – App inkl. SW-Registrierung und Apple Meta
+- `index.html` – UI und Diagramm-Logik
 - `manifest.webmanifest` – PWA Manifest
 - `sw.js` – Service Worker (Network-first für Navigation, SWR für Assets)
 - `offline.html` – Offline-Fallback
-- `icons/` – 192, 512, maskable 512, Apple Touch 180
-
-## iOS Installationshinweis
-1. Seite im Safari öffnen
-2. Share-Button → „Zum Home-Bildschirm“
-
-## GitHub Pages
-- Repo → Settings → Pages → Branch `main`, Ordner `/` (root)
-- App-URL: `https://<username>.github.io/<repo>/`
+- `icons/` – App-Icons
 
 Lizenz: MIT
