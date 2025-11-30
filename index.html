@@ -16,39 +16,40 @@
 
   <style>
     :root{
-      --bg:#0b1020;--panel:#111932;--panel-2:#0d1426;--ink:#e8ecff;--muted:#a8b3d9;--accent:#8aa4ff;--grid:#1d2744;--stroke:#4b5a86;
+      --bg:#e9eef5;--panel:#ffffff;--panel-2:#f5f7fb;--ink:#172033;--muted:#50607f;--accent:#75a7ff;--grid:#d5dbe7;--stroke:#c1c9dd;--bar:#6fa2ff;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:10px}
-    .card{width:min(1180px,98vw);max-height:98vh;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 12px 40px rgba(0,0,0,.28)}
+    .card{width:min(1180px,98vw);max-height:98vh;background:var(--panel);border:1px solid #d9e0ef;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 48px rgba(17,31,68,.12)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
     h1{margin:0;font-size:clamp(20px,3vw,26px)}
     p{margin:0;color:var(--muted)}
-    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#3a74d7;margin-bottom:4px;font-weight:700}
     .badges{display:flex;flex-wrap:wrap;gap:8px}
-    .badge{background:var(--panel-2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:6px 10px;font-variant-numeric:tabular-nums;color:var(--ink)}
+    .badge{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:10px;padding:6px 10px;font-variant-numeric:tabular-nums;color:var(--ink)}
     .layout{display:grid;grid-template-columns:320px 1fr;gap:14px;min-height:0;flex:1 1 auto}
-    .panel{background:var(--panel-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
-    label{font-weight:600;color:var(--ink)}
-    textarea{width:100%;min-height:140px;resize:vertical;background:#0b1020;color:var(--ink);border:1px solid var(--stroke);border-radius:10px;padding:10px;font-size:14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .panel{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
+    label{font-weight:700;color:var(--ink)}
+    textarea{width:100%;min-height:140px;resize:vertical;background:#fff;color:var(--ink);border:1px solid var(--stroke);border-radius:10px;padding:10px;font-size:14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
     .hint{color:var(--muted);font-size:14px;line-height:1.5}
-    button{appearance:none;background:linear-gradient(120deg,#6f86ff,#9bb3ff);border:none;color:#0b1020;font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(138,164,255,.35);transition:transform .1s ease,box-shadow .1s ease}
-    button:active{transform:translateY(1px);box-shadow:0 4px 12px rgba(138,164,255,.35)}
+    button{appearance:none;background:linear-gradient(120deg,#5f91ff,#88b3ff);border:none;color:#0b1b3f;font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(95,145,255,.32);transition:transform .1s ease,box-shadow .1s ease}
+    button:active{transform:translateY(1px);box-shadow:0 4px 12px rgba(95,145,255,.32)}
     .ghost{background:transparent;border:1px solid var(--stroke);color:var(--ink);box-shadow:none}
-    .grid-inputs{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:6px;max-height:320px;overflow:auto;padding:8px;background:#0b1020;border-radius:10px;border:1px solid var(--stroke)}
-    .depth-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 6px;background:rgba(255,255,255,.02);border-radius:8px}
-    .depth-row label{font-weight:500;font-size:14px;color:var(--muted)}
-    .depth-row input{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--stroke);background:var(--panel);color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}
+    .grid-inputs{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:6px;max-height:320px;overflow:auto;padding:8px;background:#fff;border-radius:10px;border:1px solid var(--stroke)}
+    .depth-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 6px;background:#f5f7fb;border-radius:8px}
+    .depth-row label{font-weight:600;font-size:14px;color:var(--muted)}
+    .depth-row input{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--stroke);background:#fff;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}
     .chart-wrap{flex:1 1 auto;min-height:0}
-    svg{width:100%;height:100%;min-height:520px;display:block;border-radius:12px;background:var(--panel-2)}
-    .axis text{fill:var(--muted);font-size:12px}
+    svg{width:100%;height:100%;min-height:560px;display:block;border-radius:12px;background:#fff;border:1px solid #d9e0ef}
+    .axis text{fill:#1d2a41;font-size:12px}
     .axis line, .grid line{stroke:var(--grid)}
     .grid line{stroke-dasharray:2 4}
-    .path-line{fill:none;stroke:var(--accent);stroke-width:3}
-    .point{fill:var(--accent)}
-    .title{fill:var(--ink);font-size:16px;font-weight:700}
-    .legend{font-size:12px;fill:var(--muted)}
+    .bar{fill:var(--bar);stroke:#4d7fd6;stroke-width:1}
+    .bar-value{fill:#1d2a41;font-size:12px;font-weight:700}
+    .depth-label{fill:#1d2a41;font-size:12px;text-anchor:end}
+    .title{fill:#1d2a41;font-size:16px;font-weight:800}
+    .legend{font-size:12px;fill:#1d2a41}
     .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
     .summary .badge{display:flex;flex-direction:column;gap:4px}
     .summary strong{font-size:18px;color:var(--ink)}
@@ -178,11 +179,13 @@
   }
 
   function render(){
-    const width = chart.clientWidth || 900;
-    const height = chart.clientHeight || 560;
-    const margin = {top:36,right:32,bottom:54,left:108};
+    const width = chart.clientWidth || 940;
+    const height = chart.clientHeight || 640;
+    const margin = {top:40,right:80,bottom:56,left:96};
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
+    const barHeight = Math.min(20, plotH / depthCount * 0.82);
+    const barGap = (plotH / depthCount) - barHeight;
     chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
     chart.innerHTML = '';
 
@@ -190,26 +193,16 @@
     chart.appendChild(g);
 
     const maxVal = values.reduce((m,v)=>Number.isFinite(v)?Math.max(m,v):m,0);
-    const xMax = Math.max(30, Math.ceil((maxVal+5)/10)*10 || 70);
+    const xMax = Math.max(10, Math.ceil((maxVal+4)/5)*5 || 50);
     const xScale = v => margin.left + (v/xMax)*plotW;
-    const yScale = d => margin.top + (d/3)*plotH;
+    const yScale = i => margin.top + i*(plotH/depthCount);
 
-    // Background
-    const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    bg.setAttribute('x', margin.left);
-    bg.setAttribute('y', margin.top);
-    bg.setAttribute('width', plotW);
-    bg.setAttribute('height', plotH);
-    bg.setAttribute('fill', '#0b1020');
-    bg.setAttribute('stroke', 'rgba(255,255,255,0.04)');
-    g.appendChild(bg);
-
-    // Grid horizontal
+    // Grid + axes
     const gridG = document.createElementNS('http://www.w3.org/2000/svg','g');
     gridG.setAttribute('class','grid');
+
     for(let i=0;i<=depthCount;i++){
-      const depth = (i*depthStep);
-      const y = yScale(depth);
+      const y = yScale(i);
       const line = document.createElementNS('http://www.w3.org/2000/svg','line');
       line.setAttribute('x1', margin.left);
       line.setAttribute('x2', width - margin.right);
@@ -217,18 +210,27 @@
       line.setAttribute('y2', y);
       gridG.appendChild(line);
 
-      if(i>0 && i%2===0){
+      if(i===0){
         const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
         txt.setAttribute('x', margin.left - 10);
-        txt.setAttribute('y', y + 4);
-        txt.setAttribute('text-anchor','end');
-        txt.textContent = depth.toFixed(1)+' m';
-        txt.setAttribute('class','axis');
+        txt.setAttribute('y', y + barHeight/2);
+        txt.setAttribute('class','depth-label');
+        txt.textContent = '0.0';
+        gridG.appendChild(txt);
+      }
+
+      if(i>0 && i%2===0){
+        const depth = (i*depthStep).toFixed(1);
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        txt.setAttribute('x', margin.left - 10);
+        txt.setAttribute('y', y - barGap/2 + barHeight/2 + 4);
+        txt.setAttribute('class','depth-label');
+        txt.textContent = depth;
         gridG.appendChild(txt);
       }
     }
-    // Grid vertical
-    const stepX = 10;
+
+    const stepX = 5;
     for(let x=0; x<=xMax; x+=stepX){
       const vx = xScale(x);
       const line = document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -242,28 +244,37 @@
       txt.setAttribute('x', vx);
       txt.setAttribute('y', margin.top + plotH + 18);
       txt.setAttribute('text-anchor','middle');
-      txt.textContent = x.toString();
       txt.setAttribute('class','axis');
+      txt.textContent = x.toString();
       gridG.appendChild(txt);
     }
+
+    const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+    axisLine.setAttribute('x1', margin.left);
+    axisLine.setAttribute('x2', margin.left);
+    axisLine.setAttribute('y1', margin.top);
+    axisLine.setAttribute('y2', margin.top + plotH);
+    axisLine.setAttribute('stroke', '#8a94a8');
+    axisLine.setAttribute('stroke-width','1.5');
+    gridG.appendChild(axisLine);
+
     g.appendChild(gridG);
 
     // Labels
     const title = document.createElementNS('http://www.w3.org/2000/svg','text');
     title.setAttribute('x', margin.left + plotW/2);
-    title.setAttribute('y', 22);
+    title.setAttribute('y', 24);
     title.setAttribute('class','title');
     title.setAttribute('text-anchor','middle');
-    title.textContent = 'Auswertung: Rammsondierung DPL (Schläge pro 10 cm)';
+    title.textContent = 'Rammsondierung – Schläge / 10 cm Eindringtiefe (N10)';
     g.appendChild(title);
 
     const axisY = document.createElementNS('http://www.w3.org/2000/svg','text');
-    axisY.setAttribute('x', 16);
-    axisY.setAttribute('y', margin.top + plotH/2);
+    axisY.setAttribute('x', margin.left - 18);
+    axisY.setAttribute('y', margin.top - 12);
     axisY.setAttribute('class','legend');
-    axisY.setAttribute('transform', `rotate(-90 16 ${margin.top + plotH/2})`);
-    axisY.setAttribute('text-anchor','middle');
-    axisY.textContent = 'Tiefe unter Geländeoberkante [m]';
+    axisY.setAttribute('text-anchor','end');
+    axisY.textContent = 'Tiefe [m]';
     g.appendChild(axisY);
 
     const axisX = document.createElementNS('http://www.w3.org/2000/svg','text');
@@ -271,37 +282,29 @@
     axisX.setAttribute('y', height - 10);
     axisX.setAttribute('class','legend');
     axisX.setAttribute('text-anchor','middle');
-    axisX.textContent = 'Schläge pro 10 cm (N10)';
+    axisX.textContent = 'Schläge / 10 cm Eindringtiefe (N10)';
     g.appendChild(axisX);
 
-    // Path
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    let d = '';
-    let previousValid = false;
-    values.forEach((v,idx)=>{
-      if(!Number.isFinite(v)) { previousValid=false; return; }
-      const depth = (idx+1)*depthStep;
-      const x = xScale(v);
-      const y = yScale(depth);
-      d += previousValid ? ` L ${x} ${y}` : ` M ${x} ${y}`;
-      previousValid = true;
-    });
-    path.setAttribute('d', d || '');
-    path.setAttribute('class','path-line');
-    g.appendChild(path);
-
-    // Points
+    // Bars
     values.forEach((v,idx)=>{
       if(!Number.isFinite(v)) return;
-      const depth = (idx+1)*depthStep;
-      const cx = xScale(v);
-      const cy = yScale(depth);
-      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      c.setAttribute('cx', cx);
-      c.setAttribute('cy', cy);
-      c.setAttribute('r', 4);
-      c.setAttribute('class','point');
-      g.appendChild(c);
+      const y = yScale(idx) + barGap/2;
+      const x1 = margin.left;
+      const x2 = xScale(v);
+      const bar = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      bar.setAttribute('x', x1);
+      bar.setAttribute('y', y);
+      bar.setAttribute('width', Math.max(2, x2 - x1));
+      bar.setAttribute('height', barHeight);
+      bar.setAttribute('class','bar');
+      g.appendChild(bar);
+
+      const val = document.createElementNS('http://www.w3.org/2000/svg','text');
+      val.setAttribute('x', x2 + 10);
+      val.setAttribute('y', y + barHeight/2 + 4);
+      val.setAttribute('class','bar-value');
+      val.textContent = v.toString();
+      g.appendChild(val);
     });
 
     // Stats
