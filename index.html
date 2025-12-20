@@ -1,138 +1,28 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Wir zwei – Check-in App</title>
-
-  <!-- PWA (Android/General) -->
-  <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#0d1025" />
-
-  <!-- PWA (Apple/iOS) -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
-
-  <style>
-    :root{
-      --bg:#0d1025;--panel:#151a32;--ink:#e9edff;--muted:#a8b2d6;--accent:#7dd6ff;--accent-2:#b3ffdc;--card:#1b2040;--outline:#2c3358;--shadow:0 18px 56px rgba(8,12,32,.35);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:sans-serif;} 
-    .shell{width:min(1200px,98vw);margin:auto}
-    .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
-    header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
-    h1{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:-0.3px}
-    p{margin:0;color:var(--muted);line-height:1.5}
-    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9fd9ff;margin-bottom:4px;font-weight:700}
-    .badges{display:flex;flex-wrap:wrap;gap:8px}
-    .badge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-variant-numeric:tabular-nums;color:var(--ink);display:flex;align-items:center;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flachdach PWA</title>
+    <!-- Stylesheets and other dependencies -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <h1>Welcome to Flachdach PWA</h1>
+    </header>
 
-  <!-- Simplified content structure without lockscreen -->
+    <main>
+        <section id="content">
+            <p>Explore the features and services.</p>
+        </section>
+    </main>
 
-  <div class="shell" aria-hidden="true">
-    <div class="hero">
-      <header>
-        <div>
-          <div class="eyebrow">Zweisam, auch wenn wenig Zeit ist</div>
-          <h1>Unser Check-in</h1>
-          <p>Teilt eure Stimmung, sprecht per Text oder Sprachnachricht, hängt Fotos an und haltet den Überblick wie in einem kleinen Forum.</p>
-        </div>
-        <div class="badges">
-          <div class="badge">PWA · offlinefähig</div>
-          <div class="badge" id="lastUpdate">Keine Einträge</div>
-        </div>
-      </header>
-    </div>
+    <footer>
+        <p>&copy; 2023 Flachdach. All rights reserved.</p>
+    </footer>
 
-    <div class="layout" aria-live="polite">
-      <div class="panel">
-        <div class="section-title">
-          <h2>Check-in schreiben</h2>
-          <button id="saveBtn" type="button">Sichern & teilen</button>
-        </div>
-
-        <div class="pill">
-          <div>
-            <strong>Wer bist du?</strong>
-            <div class="subtle">Schalte zwischen euch hin und her.</div>
-          </div>
-          <div class="attachment-actions" id="roleSwitch"></div>
-        </div>
-
-        <div>
-          <label>Wie fühlst du dich?</label>
-          <div class="moods" id="moodList"></div>
-        </div>
-        <div class="row">
-          <div class="pill">
-            <div>
-              <strong>Energie</strong>
-              <div class="subtle">Wieviel Kapazität hast du gerade?</div>
-            </div>
-            <input id="energy" type="range" min="1" max="10" value="5">
-          </div>
-          <div class="pill">
-            <div>
-              <strong>Gesprächswunsch</strong>
-              <div class="subtle">Soll der andere reagieren?</div>
-            </div>
-            <select id="talkIntent" style="width:140px;border-radius:10px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:8px">
-              <option value="wenn Zeit">Wenn Zeit ist</option>
-              <option value="bitte melden">Bitte bald melden</option>
-              <option value="nur Info">Nur Info</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label for="topic">Thema festhalten</label>
-          <textarea id="topic" placeholder="Was möchtest du teilen oder besprechen?"></textarea>
-          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt als Forumspost, bis ihr ihn abhakt oder die 14 Tage vorbei sind.</div>
-        </div>
-
-        <div class="row">
-          <div class="pill" style="flex-direction:column;align-items:flex-start">
-            <div class="section-title" style="width:100%">
-              <h3 style="margin:0;font-size:16px">Sprachnachricht</h3>
-              <button id="voiceBtn" type="button" class="ghost">Aufnahme starten</button>
-            </div>
-            <div class="subtle" id="voiceStatus">Bereit zum Aufnehmen.</div>
-            <div class="attachment-preview" id="voicePreview" hidden>
-              <audio controls style="width:100%"></audio>
-              <button id="clearVoice" type="button" class="ghost" style="margin-top:6px">Sprachnachricht entfernen</button>
-            </div>
-          </div>
-          <div class="pill" style="flex-direction:column;align-items:flex-start">
-            <h3 style="margin:0;font-size:16px">Foto anhängen</h3>
-            <input id="photoInput" type="file" accept="image/*" />
-            <div class="attachment-preview" id="photoPreview" hidden>
-              <img alt="Angehängtes Foto" />
-              <button id="clearPhoto" type="button" class="ghost" style="margin-top:6px">Foto entfernen</button>
-            </div>
-            <div class="subtle">Optionales Foto zu deinem Eintrag.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-title">
-          <h2>Forum</h2>
-          <div class="chips" id="filters"></div>
-        </div>
-        <div class="list" id="entryList"></div>
-        <div class="section-title">
-          <h2>Zusammenfassung</h2>
-          <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
-        </div>
-        <div class="summary-card" id="summaryCard">
-          <strong>Keine Einträge vorhanden</strong>
-          <div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung.</div>
-        </div>
-    </div>
+    <!-- Your scripts here -->
+    <script src="script.js"></script>
 </body>
 </html>
