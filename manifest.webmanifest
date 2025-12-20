@@ -1,10 +1,10 @@
 {
-  "name": "Rammsondierungsprotokoll DPL",
-  "short_name": "Rammsondierung",
-  "start_url": "./index.html",
+  "name": "Wir zwei – Check-in",
+  "short_name": "Check-in",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#0b1020",
+  "background_color": "#0d1025",
+  "theme_color": "#0d1025",
   "orientation": "any",
   "scope": "./",
   "icons": [

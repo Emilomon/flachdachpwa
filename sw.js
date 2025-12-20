@@ -1,10 +1,10 @@
 // sw.js
-const VERSION = "rammsondierung-v1-" + new Date().toISOString().slice(0,10);
+const VERSION = "wirzwei-checkin-v1-" + new Date().toISOString().slice(0,10);
 const CORE_CACHE = `core-${VERSION}`;
 const STATIC_CACHE = `static-${VERSION}`;
 
 const START_URL = "./index.html";
-const CORE_ASSETS = ["./", START_URL, "./manifest.webmanifest", "./offline.html"];
+const CORE_ASSETS = ["./", START_URL, "./manifest.webmanifest", "./offline.html", "./404.html"];
 const STATIC_ASSETS = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
