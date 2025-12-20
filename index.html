@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Wir zwei – Check-in App</title>
+  <meta name="format-detection" content="telephone=no" />
 
   <!-- PWA (Android/General) -->
   <link rel="manifest" href="manifest.webmanifest" />
@@ -20,7 +21,10 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
-    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center}
+    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center;min-height:100vh;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:rgba(255,255,255,0)}
+    @supports(padding:max(0px)){
+      body{padding-top:max(12px,env(safe-area-inset-top));padding-right:max(12px,env(safe-area-inset-right));padding-bottom:max(12px,env(safe-area-inset-bottom));padding-left:max(12px,env(safe-area-inset-left))}
+    }
     .shell{width:min(1200px,98vw);margin:auto}
     .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
@@ -32,7 +36,7 @@
     .layout{margin-top:14px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:14px}
     .panel{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
     label{font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
-    textarea, input[type="text"], input[type="password"], input[type="file"], select{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:14px;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
+    textarea, input[type="text"], input[type="password"], input[type="file"], select{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:16px;line-height:1.4;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
     textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus, input[type="file"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.14)}
     textarea{min-height:120px;resize:vertical}
     .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;align-items:end}
@@ -43,8 +47,9 @@
     .mood strong{font-size:16px}
     .mood small{color:var(--muted)}
     .mood[data-active="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.12);transform:translateY(-1px)}
-    button{appearance:none;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);border:none;color:#0b1228;font-weight:800;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;box-shadow:0 10px 30px rgba(125,214,255,.26);transition:transform .1s ease,box-shadow .1s ease}
+    button{appearance:none;-webkit-appearance:none;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);border:none;color:#0b1228;font-weight:800;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;box-shadow:0 10px 30px rgba(125,214,255,.26);transition:transform .1s ease,box-shadow .1s ease}
     button:active{transform:translateY(1px);box-shadow:0 6px 18px rgba(125,214,255,.26)}
+    button[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
     .ghost{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--outline);box-shadow:none}
     .switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
     .pill{padding:10px 12px;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -217,12 +222,14 @@
   const voiceStatus = document.getElementById('voiceStatus');
   const voicePreview = document.getElementById('voicePreview');
   const voiceAudio = voicePreview.querySelector('audio');
+  voiceAudio.setAttribute('playsinline','');
   const clearVoiceBtn = document.getElementById('clearVoice');
   const photoInput = document.getElementById('photoInput');
   const photoPreview = document.getElementById('photoPreview');
   const clearPhotoBtn = document.getElementById('clearPhoto');
   const syncFeedback = document.getElementById('syncFeedback');
   const importArea = document.getElementById('importArea');
+  const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
 
   const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null };
   let state = load();
@@ -238,7 +245,13 @@
   document.getElementById('copySync').addEventListener('click', copySyncCode);
   document.getElementById('importBtn').addEventListener('click', importSyncCode);
   document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
-  voiceBtn.addEventListener('click', toggleRecording);
+  if(!supportsMediaRecorder){
+    voiceBtn.disabled = true;
+    voiceBtn.textContent = 'Aufnahme nicht unterstützt';
+    voiceStatus.textContent = 'Auf diesem Gerät sind Sprachnachrichten nicht möglich.';
+  } else {
+    voiceBtn.addEventListener('click', toggleRecording);
+  }
   clearVoiceBtn.addEventListener('click', ()=>{ currentVoice = null; renderVoicePreview(); });
   photoInput.addEventListener('change', handlePhotoSelect);
   clearPhotoBtn.addEventListener('click', ()=>{ currentPhoto = null; renderPhotoPreview(); });
@@ -585,6 +598,10 @@
   }
 
   async function toggleRecording(){
+    if(!supportsMediaRecorder){
+      voiceStatus.textContent = 'Auf diesem Gerät werden Sprachnachrichten nicht unterstützt.';
+      return;
+    }
     if(mediaRecorder && mediaRecorder.state === 'recording'){
       mediaRecorder.stop();
       voiceBtn.textContent = 'Verarbeite...';
