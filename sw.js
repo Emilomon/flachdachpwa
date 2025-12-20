@@ -1,5 +1,5 @@
 // sw.js
-const VERSION = "rammsondierung-v1-" + new Date().toISOString().slice(0,10);
+const VERSION = "wirzwei-checkin-v1-" + new Date().toISOString().slice(0,10);
 const CORE_CACHE = `core-${VERSION}`;
 const STATIC_CACHE = `static-${VERSION}`;
 

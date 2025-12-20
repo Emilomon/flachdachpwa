@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Rammsondierungsprotokoll (DPL)</title>
+  <title>Wir zwei – Check-in App</title>
 
   <!-- PWA (Android/General) -->
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="theme-color" content="#0d1025" />
 
   <!-- PWA (Apple/iOS) -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,81 +16,134 @@
 
   <style>
     :root{
-      --bg:#e9eef5;--panel:#ffffff;--panel-2:#f5f7fb;--ink:#172033;--muted:#50607f;--accent:#75a7ff;--grid:#d5dbe7;--stroke:#c1c9dd;--bar:#6fa2ff;
+      --bg:#0d1025;--panel:#151a32;--ink:#e9edff;--muted:#a8b2d6;--accent:#7dd6ff;--accent-2:#b3ffdc;--card:#1b2040;--outline:#2c3358;--shadow:0 18px 56px rgba(8,12,32,.35);
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
-    body{display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:10px}
-    .card{width:min(1180px,98vw);max-height:98vh;background:var(--panel);border:1px solid #d9e0ef;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 48px rgba(17,31,68,.12)}
+    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center}
+    .shell{width:min(1200px,98vw);margin:auto}
+    .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
-    h1{margin:0;font-size:clamp(20px,3vw,26px)}
-    p{margin:0;color:var(--muted)}
-    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#3a74d7;margin-bottom:4px;font-weight:700}
+    h1{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:-0.3px}
+    p{margin:0;color:var(--muted);line-height:1.5}
+    .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9fd9ff;margin-bottom:4px;font-weight:700}
     .badges{display:flex;flex-wrap:wrap;gap:8px}
-    .badge{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:10px;padding:6px 10px;font-variant-numeric:tabular-nums;color:var(--ink)}
-    .layout{display:grid;grid-template-columns:320px 1fr;gap:14px;min-height:0;flex:1 1 auto}
-    .panel{background:var(--panel-2);border:1px solid #d9e0ef;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
-    label{font-weight:700;color:var(--ink)}
-    textarea{width:100%;min-height:140px;resize:vertical;background:#fff;color:var(--ink);border:1px solid var(--stroke);border-radius:10px;padding:10px;font-size:14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
-    .hint{color:var(--muted);font-size:14px;line-height:1.5}
-    button{appearance:none;background:linear-gradient(120deg,#5f91ff,#88b3ff);border:none;color:#0b1b3f;font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(95,145,255,.32);transition:transform .1s ease,box-shadow .1s ease}
-    button:active{transform:translateY(1px);box-shadow:0 4px 12px rgba(95,145,255,.32)}
-    .ghost{background:transparent;border:1px solid var(--stroke);color:var(--ink);box-shadow:none}
-    .grid-inputs{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:6px;max-height:320px;overflow:auto;padding:8px;background:#fff;border-radius:10px;border:1px solid var(--stroke)}
-    .depth-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 6px;background:#f5f7fb;border-radius:8px}
-    .depth-row label{font-weight:600;font-size:14px;color:var(--muted)}
-    .depth-row input{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--stroke);background:#fff;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}
-    .chart-wrap{flex:1 1 auto;min-height:0}
-    svg{width:100%;height:100%;min-height:560px;display:block;border-radius:12px;background:#fff;border:1px solid #d9e0ef}
-    .axis text{fill:#1d2a41;font-size:12px}
-    .axis line, .grid line{stroke:var(--grid)}
-    .grid line{stroke-dasharray:2 4}
-    .bar{fill:var(--bar);stroke:#4d7fd6;stroke-width:1}
-    .bar-value{fill:#1d2a41;font-size:12px;font-weight:700}
-    .depth-label{fill:#1d2a41;font-size:12px;text-anchor:end}
-    .title{fill:#1d2a41;font-size:16px;font-weight:800}
-    .legend{font-size:12px;fill:#1d2a41}
-    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
-    .summary .badge{display:flex;flex-direction:column;gap:4px}
-    .summary strong{font-size:18px;color:var(--ink)}
-    @media (max-width:900px){.layout{grid-template-columns:1fr}.grid-inputs{max-height:220px}}
+    .badge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-variant-numeric:tabular-nums;color:var(--ink);display:flex;align-items:center;gap:6px}
+    .layout{margin-top:14px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:14px}
+    .panel{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+    label{font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
+    textarea, input[type="text"]{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:14px;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
+    textarea:focus, input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.14)}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;align-items:end}
+    .subtle{color:var(--muted);font-size:13px}
+    .moods{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+    .mood{border:1px solid var(--outline);border-radius:12px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#0f1329;transition:border .15s ease,transform .1s ease}
+    .mood input{display:none}
+    .mood strong{font-size:16px}
+    .mood small{color:var(--muted)}
+    .mood[data-active="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.12);transform:translateY(-1px)}
+    button{appearance:none;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);border:none;color:#0b1228;font-weight:800;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;box-shadow:0 10px 30px rgba(125,214,255,.26);transition:transform .1s ease,box-shadow .1s ease}
+    button:active{transform:translateY(1px);box-shadow:0 6px 18px rgba(125,214,255,.26)}
+    .ghost{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--outline);box-shadow:none}
+    .switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+    .pill{padding:10px 12px;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px}
+    .entry{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:grid;grid-template-columns:auto 1fr;gap:10px}
+    .entry .tag{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;display:inline-flex;align-items:center;gap:6px}
+    .entry small{color:var(--muted)}
+    .questions{display:grid;gap:8px}
+    .question{padding:10px 12px;border-radius:10px;border:1px dashed var(--outline);background:rgba(255,255,255,.04)}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .section-title h2{margin:0;font-size:18px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--outline);color:var(--ink);background:rgba(255,255,255,.05);cursor:pointer;transition:border .12s ease}
+    .chip[data-active="true"]{border-color:var(--accent);background:rgba(125,214,255,.14);color:#0b1228}
+    .summary-card{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:flex;flex-direction:column;gap:8px}
+    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}}
   </style>
 </head>
 <body>
-  <div class="card">
-    <header>
-      <div>
-        <div class="eyebrow">Bodenkennwerte</div>
-        <h1>Rammsondierungsprotokoll</h1>
-        <p>Trage die Schlagzahlen pro 10&nbsp;cm ein (0&nbsp;m bis 3&nbsp;m). Das Diagramm wird automatisch aktualisiert.</p>
-      </div>
-      <div class="badges">
-        <div class="badge">DIN EN 22476‑2 · DPL</div>
-        <div class="badge" id="countBadge">0 / 30 Werte</div>
-      </div>
-    </header>
-
-    <div class="layout">
-      <div class="panel" aria-label="Eingabe">
+  <div class="shell">
+    <div class="hero">
+      <header>
         <div>
-          <label for="inputField">Schlagzahlen (N10) einfügen</label>
-          <textarea id="inputField" placeholder="Beispiel: 6 7 9 12 15 18 ..."></textarea>
-          <p class="hint">Zahlen werden in der Reihenfolge von 0,1&nbsp;m bis 3,0&nbsp;m gelesen. Trenne Werte mit Leerzeichen, Zeilenumbrüchen oder Kommata.</p>
+          <div class="eyebrow">Zweisam, auch wenn wenig Zeit ist</div>
+          <h1>Unser Check-in</h1>
+          <p>Teilt eure Stimmung, legt Themen ab und lasst euch kurze Fragen vorschlagen. So bleibt ihr verbunden, auch wenn die Zeit knapp ist.</p>
         </div>
-        <div class="grid-inputs" id="depthInputs" aria-label="Tabelle der Schlagzahlen"></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-          <button id="sampleBtn" type="button">Beispieldaten laden</button>
-          <button id="clearBtn" type="button" class="ghost">Zurücksetzen</button>
+        <div class="badges">
+          <div class="badge">PWA · offlinefähig</div>
+          <div class="badge" id="lastUpdate">Keine Einträge</div>
         </div>
+      </header>
+    </div>
+
+    <div class="layout" aria-live="polite">
+      <div class="panel">
+        <div class="section-title">
+          <h2>Check-in schreiben</h2>
+          <button id="saveBtn" type="button">Sichern & teilen</button>
+        </div>
+        <div class="row">
+          <div>
+            <label for="meName">Dein Name</label>
+            <input id="meName" type="text" placeholder="z. B. Anna" autocomplete="name">
+          </div>
+          <div>
+            <label for="partnerName">Name deines Partners/deiner Partnerin</label>
+            <input id="partnerName" type="text" placeholder="z. B. Ben" autocomplete="name">
+          </div>
+        </div>
+        <div>
+          <label>Wie fühlst du dich?</label>
+          <div class="moods" id="moodList"></div>
+        </div>
+        <div class="row">
+          <div class="pill">
+            <div>
+              <strong>Energie</strong>
+              <div class="subtle">Wieviel Kapazität hast du gerade?</div>
+            </div>
+            <input id="energy" type="range" min="1" max="10" value="5">
+          </div>
+          <div class="pill">
+            <div>
+              <strong>Gesprächswunsch</strong>
+              <div class="subtle">Soll der andere reagieren?</div>
+            </div>
+            <select id="talkIntent" style="width:140px;border-radius:10px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:8px">
+              <option value="wenn Zeit">Wenn Zeit ist</option>
+              <option value="bitte melden">Bitte bald melden</option>
+              <option value="nur Info">Nur Info</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="topic">Thema festhalten</label>
+          <textarea id="topic" placeholder="Was möchtest du später teilen oder besprechen?"></textarea>
+          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt gespeichert, bis ihr ihn abhakt.</div>
+        </div>
+        <div class="section-title">
+          <h2>KI-Fragen für heute</h2>
+          <button id="refreshQuestions" type="button" class="ghost">Neue Fragen holen</button>
+        </div>
+        <div class="questions" id="questionBox"></div>
       </div>
 
-      <div class="panel chart-wrap" aria-label="Diagramm">
-        <svg id="chart" role="img" aria-label="Rammsondierungsprotokoll Diagramm"></svg>
-        <div class="summary" aria-live="polite">
-          <div class="badge"><span>Tiefe</span><strong>0 – 3,0 m</strong></div>
-          <div class="badge"><span>Max. Schlagzahl</span><strong id="maxBadge">–</strong></div>
-          <div class="badge"><span>Durchschnitt</span><strong id="avgBadge">–</strong></div>
-          <div class="badge"><span>Letzter Wert (3,0 m)</span><strong id="lastBadge">–</strong></div>
+      <div class="panel">
+        <div class="section-title">
+          <h2>Offene Themen</h2>
+          <div class="chips" id="filters"></div>
+        </div>
+        <div class="list" id="entryList"></div>
+        <div class="section-title">
+          <h2>Zusammenfassung für deinen Partner</h2>
+          <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
+        </div>
+        <div class="summary-card" id="summaryCard">
+          <strong>Keine Einträge vorhanden</strong>
+          <div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung, die du z. B. per Messenger teilen kannst.</div>
         </div>
       </div>
     </div>
@@ -98,230 +151,294 @@
 
 <script>
 (function(){
-  const depthStep = 0.1;
-  const depthCount = 30; // 0.1 m bis 3.0 m
-  const values = new Array(depthCount).fill(null);
+  const STORAGE_KEY = 'tandem-checkins-v1';
+  const moodList = document.getElementById('moodList');
+  const entryList = document.getElementById('entryList');
+  const filters = document.getElementById('filters');
+  const questionBox = document.getElementById('questionBox');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const summaryCard = document.getElementById('summaryCard');
+  const meNameInput = document.getElementById('meName');
+  const partnerNameInput = document.getElementById('partnerName');
 
-  const textarea = document.getElementById('inputField');
-  const grid = document.getElementById('depthInputs');
-  const chart = document.getElementById('chart');
-  const countBadge = document.getElementById('countBadge');
-  const maxBadge = document.getElementById('maxBadge');
-  const avgBadge = document.getElementById('avgBadge');
-  const lastBadge = document.getElementById('lastBadge');
+  const moods = [
+    { id:'ruhig', label:'Ruhig', emoji:'🌿', tone:'ausgeglichen' },
+    { id:'gestresst', label:'Gestresst', emoji:'⚡️', tone:'unter Strom' },
+    { id:'müde', label:'Müde', emoji:'😴', tone:'erschöpft' },
+    { id:'freudig', label:'Freudig', emoji:'✨', tone:'positiv' },
+    { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
+    { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' },
+  ];
 
-  function formatNumber(n){ return Number.isFinite(n) ? n.toFixed(0) : '–'; }
+  const questionPool = {
+    ruhig: [
+      'Was hat dir heute Ruhe gegeben?',
+      'Gibt es etwas, das du gern so beibehalten möchtest?',
+      'Welche Kleinigkeit können wir heute teilen?'
+    ],
+    gestresst: [
+      'Was frisst gerade die meiste Energie?',
+      'Wobei würdest du dir kurze Unterstützung wünschen?',
+      'Was könnte dir helfen, einmal durchzuatmen?'
+    ],
+    müde: [
+      'Was hat dich heute erschöpft?',
+      'Was braucht heute keinen Perfektionismus?',
+      'Gibt es etwas, das du verschieben kannst?'
+    ],
+    freudig: [
+      'Was hat dich heute gefreut?',
+      'Wen möchtest du an deiner Freude teilhaben lassen?',
+      'Was können wir davon festhalten?'
+    ],
+    genervt: [
+      'Was nervt dich konkret?',
+      'Braucht es nur Gehör oder eine Lösung?',
+      'Was wäre ein kleiner Schritt, der Druck rausnimmt?'
+    ],
+    dankbar: [
+      'Wofür bist du heute dankbar?',
+      'Möchtest du jemandem Danke sagen?',
+      'Welche Geste hat dich berührt?'
+    ],
+    fallback: [
+      'Welche Überschrift hätte dein Tag?',
+      'Was darf dein Partner jetzt über dich wissen?',
+      'Wie kann man dir heute etwas Gutes tun?'
+    ]
+  };
 
-  function buildGrid(){
-    grid.innerHTML = '';
-    for(let i=0;i<depthCount;i++){
-      const depth = ((i+1)*depthStep).toFixed(1);
-      const row = document.createElement('div');
-      row.className = 'depth-row';
-      const lab = document.createElement('label');
-      lab.textContent = `${depth} m`;
+  const defaultState = {
+    entries: [],
+    lastMood: 'ruhig',
+    meName: '',
+    partnerName: ''
+  };
+
+  let state = load();
+  hydrateForm();
+  renderMoods();
+  renderFilters();
+  renderEntries();
+  refreshQuestions();
+
+  document.getElementById('saveBtn').addEventListener('click', saveEntry);
+  document.getElementById('refreshQuestions').addEventListener('click', refreshQuestions);
+  document.getElementById('copySummary').addEventListener('click', copySummary);
+  meNameInput.addEventListener('input', () => { state.meName = meNameInput.value.trim(); persist(); renderFilters(); renderEntries(); });
+  partnerNameInput.addEventListener('input', () => { state.partnerName = partnerNameInput.value.trim(); persist(); renderFilters(); renderEntries(); });
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return {...defaultState};
+      return { ...defaultState, ...JSON.parse(raw) };
+    }catch(e){
+      return {...defaultState};
+    }
+  }
+
+  function persist(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function hydrateForm(){
+    meNameInput.value = state.meName;
+    partnerNameInput.value = state.partnerName;
+    document.getElementById('energy').value = 5;
+    document.getElementById('topic').value = '';
+    document.getElementById('talkIntent').value = 'wenn Zeit';
+  }
+
+  function renderMoods(){
+    moodList.innerHTML = '';
+    moods.forEach(m => {
+      const label = document.createElement('label');
+      label.className = 'mood';
+      label.dataset.active = m.id === state.lastMood;
+
       const input = document.createElement('input');
-      input.type = 'number';
-      input.min = '0';
-      input.step = '1';
-      input.placeholder = '–';
-      input.dataset.index = i;
-      input.addEventListener('input', () => {
-        const v = input.value === '' ? null : Number(input.value);
-        values[i] = Number.isFinite(v) ? v : null;
-        syncTextarea();
-        render();
+      input.type = 'radio';
+      input.name = 'mood';
+      input.value = m.id;
+      input.checked = m.id === state.lastMood;
+      input.addEventListener('change', () => {
+        state.lastMood = m.id;
+        persist();
+        renderMoods();
+        refreshQuestions();
       });
-      row.append(lab, input);
-      grid.appendChild(row);
-    }
-  }
 
-  function syncInputs(){
-    const inputs = grid.querySelectorAll('input');
-    inputs.forEach(inp => {
-      const i = Number(inp.dataset.index);
-      inp.value = values[i] ?? '';
+      const icon = document.createElement('div');
+      icon.style.fontSize = '22px';
+      icon.textContent = m.emoji;
+
+      const text = document.createElement('div');
+      const strong = document.createElement('strong');
+      strong.textContent = m.label;
+      const small = document.createElement('small');
+      small.textContent = `Gefühl: ${m.tone}`;
+      text.append(strong, document.createElement('br'), small);
+
+      label.append(input, icon, text);
+      moodList.appendChild(label);
     });
   }
 
-  function syncTextarea(){
-    const compact = values.map(v => Number.isFinite(v) ? v : '-').join(' ');
-    textarea.value = compact;
+  function renderFilters(){
+    filters.innerHTML = '';
+    const names = [state.meName || 'Ich', state.partnerName || 'Partner'];
+    ['alle', ...names].forEach(f => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip';
+      chip.textContent = f === 'alle' ? 'Alle Einträge' : f;
+      chip.dataset.value = f;
+      chip.dataset.active = state.filter === f || (!state.filter && f === 'alle');
+      chip.addEventListener('click', () => {
+        state.filter = f === 'alle' ? null : f;
+        persist();
+        renderFilters();
+        renderEntries();
+      });
+      filters.appendChild(chip);
+    });
   }
 
-  function parseTextarea(){
-    const raw = textarea.value.trim();
-    const parts = raw.split(/[,\s]+/).filter(Boolean);
-    for(let i=0;i<depthCount;i++){
-      const token = parts[i];
-      if(token === undefined || token === '-') { values[i] = null; continue; }
-      const num = Number(token);
-      values[i] = Number.isFinite(num) ? num : null;
+  function renderEntries(){
+    entryList.innerHTML = '';
+    const list = state.entries
+      .filter(e => !state.filter || e.author === state.filter)
+      .sort((a,b)=>b.createdAt-a.createdAt);
+
+    if(list.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'subtle';
+      empty.textContent = 'Noch keine Einträge. Schreib den ersten Check-in!';
+      entryList.appendChild(empty);
+      summaryCard.innerHTML = '<strong>Keine Einträge vorhanden</strong><div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung.</div>';
+      lastUpdate.textContent = 'Keine Einträge';
+      return;
     }
-    syncInputs();
-    render();
-  }
 
-  function loadSample(){
-    const sample = [6,7,9,12,15,18,20,22,19,17,14,12,11,12,14,15,17,20,26,31,36,42,48,52,58,62,64,66,66,66];
-    sample.forEach((v,i)=>{ values[i]=v; });
-    syncInputs();
-    syncTextarea();
-    render();
-  }
+    const formatter = new Intl.DateTimeFormat('de-DE',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});
 
-  function clearAll(){
-    values.fill(null);
-    syncInputs();
-    syncTextarea();
-    render();
-  }
+    list.forEach(entry => {
+      const node = document.createElement('div');
+      node.className = 'entry';
 
-  function render(){
-    const width = chart.clientWidth || 940;
-    const height = chart.clientHeight || 640;
-    const margin = {top:40,right:80,bottom:56,left:96};
-    const plotW = width - margin.left - margin.right;
-    const plotH = height - margin.top - margin.bottom;
-    const barHeight = Math.min(20, plotH / depthCount * 0.82);
-    const barGap = (plotH / depthCount) - barHeight;
-    chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    chart.innerHTML = '';
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.textContent = `${entry.emoji} ${entry.moodLabel}`;
 
-    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    chart.appendChild(g);
+      const body = document.createElement('div');
+      const headerLine = document.createElement('div');
+      const author = document.createElement('strong');
+      author.textContent = entry.author;
+      const time = document.createElement('small');
+      time.textContent = formatter.format(entry.createdAt);
+      headerLine.append(author, document.createTextNode(' · '), time);
 
-    const maxVal = values.reduce((m,v)=>Number.isFinite(v)?Math.max(m,v):m,0);
-    const xMax = Math.max(10, Math.ceil((maxVal+4)/5)*5 || 50);
-    const xScale = v => margin.left + (v/xMax)*plotW;
-    const yScale = i => margin.top + i*(plotH/depthCount);
+      const infoLine = document.createElement('div');
+      const info = document.createElement('small');
+      info.textContent = `Energie: ${entry.energy}/10 · Wunsch: ${entry.talkIntent}`;
+      infoLine.append(info);
 
-    // Grid + axes
-    const gridG = document.createElementNS('http://www.w3.org/2000/svg','g');
-    gridG.setAttribute('class','grid');
-
-    for(let i=0;i<=depthCount;i++){
-      const y = yScale(i);
-      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', margin.left);
-      line.setAttribute('x2', width - margin.right);
-      line.setAttribute('y1', y);
-      line.setAttribute('y2', y);
-      gridG.appendChild(line);
-
-      if(i===0){
-        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-        txt.setAttribute('x', margin.left - 10);
-        txt.setAttribute('y', y + barHeight/2);
-        txt.setAttribute('class','depth-label');
-        txt.textContent = '0.0';
-        gridG.appendChild(txt);
+      const topicLine = document.createElement('div');
+      topicLine.style.marginTop = '6px';
+      if(entry.topic){
+        topicLine.textContent = entry.topic;
+      } else {
+        const empty = document.createElement('span');
+        empty.className = 'subtle';
+        empty.textContent = 'Kein Text';
+        topicLine.append(empty);
       }
 
-      if(i>0 && i%2===0){
-        const depth = (i*depthStep).toFixed(1);
-        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-        txt.setAttribute('x', margin.left - 10);
-        txt.setAttribute('y', y - barGap/2 + barHeight/2 + 4);
-        txt.setAttribute('class','depth-label');
-        txt.textContent = depth;
-        gridG.appendChild(txt);
-      }
-    }
+      body.append(headerLine, infoLine, topicLine);
 
-    const stepX = 5;
-    for(let x=0; x<=xMax; x+=stepX){
-      const vx = xScale(x);
-      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', vx);
-      line.setAttribute('x2', vx);
-      line.setAttribute('y1', margin.top);
-      line.setAttribute('y2', margin.top + plotH);
-      gridG.appendChild(line);
-
-      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x', vx);
-      txt.setAttribute('y', margin.top + plotH + 18);
-      txt.setAttribute('text-anchor','middle');
-      txt.setAttribute('class','axis');
-      txt.textContent = x.toString();
-      gridG.appendChild(txt);
-    }
-
-    const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
-    axisLine.setAttribute('x1', margin.left);
-    axisLine.setAttribute('x2', margin.left);
-    axisLine.setAttribute('y1', margin.top);
-    axisLine.setAttribute('y2', margin.top + plotH);
-    axisLine.setAttribute('stroke', '#8a94a8');
-    axisLine.setAttribute('stroke-width','1.5');
-    gridG.appendChild(axisLine);
-
-    g.appendChild(gridG);
-
-    // Labels
-    const title = document.createElementNS('http://www.w3.org/2000/svg','text');
-    title.setAttribute('x', margin.left + plotW/2);
-    title.setAttribute('y', 24);
-    title.setAttribute('class','title');
-    title.setAttribute('text-anchor','middle');
-    title.textContent = 'Rammsondierung – Schläge / 10 cm Eindringtiefe (N10)';
-    g.appendChild(title);
-
-    const axisY = document.createElementNS('http://www.w3.org/2000/svg','text');
-    axisY.setAttribute('x', margin.left - 18);
-    axisY.setAttribute('y', margin.top - 12);
-    axisY.setAttribute('class','legend');
-    axisY.setAttribute('text-anchor','end');
-    axisY.textContent = 'Tiefe [m]';
-    g.appendChild(axisY);
-
-    const axisX = document.createElementNS('http://www.w3.org/2000/svg','text');
-    axisX.setAttribute('x', margin.left + plotW/2);
-    axisX.setAttribute('y', height - 10);
-    axisX.setAttribute('class','legend');
-    axisX.setAttribute('text-anchor','middle');
-    axisX.textContent = 'Schläge / 10 cm Eindringtiefe (N10)';
-    g.appendChild(axisX);
-
-    // Bars
-    values.forEach((v,idx)=>{
-      if(!Number.isFinite(v)) return;
-      const y = yScale(idx) + barGap/2;
-      const x1 = margin.left;
-      const x2 = xScale(v);
-      const bar = document.createElementNS('http://www.w3.org/2000/svg','rect');
-      bar.setAttribute('x', x1);
-      bar.setAttribute('y', y);
-      bar.setAttribute('width', Math.max(2, x2 - x1));
-      bar.setAttribute('height', barHeight);
-      bar.setAttribute('class','bar');
-      g.appendChild(bar);
-
-      const val = document.createElementNS('http://www.w3.org/2000/svg','text');
-      val.setAttribute('x', x2 + 10);
-      val.setAttribute('y', y + barHeight/2 + 4);
-      val.setAttribute('class','bar-value');
-      val.textContent = v.toString();
-      g.appendChild(val);
+      node.append(tag, body);
+      entryList.appendChild(node);
     });
 
-    // Stats
-    const filled = values.filter(v=>Number.isFinite(v));
-    const avg = filled.length ? filled.reduce((a,b)=>a+b,0)/filled.length : null;
-    countBadge.textContent = `${filled.length} / ${depthCount} Werte`;
-    maxBadge.textContent = formatNumber(maxVal || null);
-    avgBadge.textContent = formatNumber(avg);
-    lastBadge.textContent = formatNumber(values[depthCount-1]);
+    const latest = list[0];
+    lastUpdate.textContent = 'Letzter Eintrag: ' + formatter.format(latest.createdAt);
+    summaryCard.innerHTML = '';
+    const summaryTitle = document.createElement('strong');
+    summaryTitle.textContent = `Kurzinfo für ${state.partnerName || 'deinen Partner'}`;
+    const summaryText = document.createElement('div');
+    summaryText.textContent = buildSummary(latest);
+    summaryCard.append(summaryTitle, summaryText);
   }
 
-  textarea.addEventListener('input', parseTextarea);
-  document.getElementById('sampleBtn').addEventListener('click', loadSample);
-  document.getElementById('clearBtn').addEventListener('click', clearAll);
+  function saveEntry(){
+    const author = meNameInput.value.trim() || 'Ich';
+    const partner = partnerNameInput.value.trim() || 'dein Partner';
+    const mood = state.lastMood || 'ruhig';
+    const moodMeta = moods.find(m => m.id === mood) || moods[0];
+    const energy = Number(document.getElementById('energy').value) || 5;
+    const topic = document.getElementById('topic').value.trim();
+    const talkIntent = document.getElementById('talkIntent').value;
+    const createdAt = Date.now();
 
-  buildGrid();
-  render();
+    const entry = {
+      id: crypto.randomUUID ? crypto.randomUUID() : `${createdAt}-${Math.random()}`,
+      author,
+      partner,
+      mood,
+      moodLabel: moodMeta.label,
+      emoji: moodMeta.emoji,
+      energy,
+      talkIntent,
+      topic,
+      createdAt
+    };
+
+    state.entries.push(entry);
+    state.meName = author;
+    state.partnerName = partner === 'dein Partner' ? '' : partner;
+    persist();
+    hydrateForm();
+    renderFilters();
+    renderEntries();
+    refreshQuestions();
+  }
+
+  function refreshQuestions(){
+    const mood = state.lastMood;
+    const pool = questionPool[mood] || questionPool.fallback;
+    const shuffled = [...pool].sort(()=>Math.random()-0.5);
+    const picked = shuffled.slice(0,3);
+
+    questionBox.innerHTML = '';
+    picked.forEach(q => {
+      const node = document.createElement('div');
+      node.className = 'question';
+      node.textContent = q;
+      questionBox.appendChild(node);
+    });
+  }
+
+  function buildSummary(entry){
+    const intro = `${entry.author} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie).`;
+    const ask = entry.talkIntent === 'nur Info'
+      ? 'Keine Antwort nötig, einfach nur teilen.'
+      : `Wunsch: ${entry.talkIntent}.`;
+    const topic = entry.topic ? `Notiz: "${entry.topic}".` : 'Keine extra Notiz.';
+    return `${intro} ${topic} ${ask}`;
+  }
+
+  async function copySummary(){
+    const list = state.entries.sort((a,b)=>b.createdAt-a.createdAt);
+    if(list.length === 0) return;
+    const text = buildSummary(list[0]);
+    try{
+      await navigator.clipboard.writeText(text);
+      summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">In die Zwischenablage kopiert.</div>');
+    }catch(e){
+      summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">Kopieren nicht möglich. Bitte manuell markieren.</div>');
+    }
+  }
 })();
 </script>
 
