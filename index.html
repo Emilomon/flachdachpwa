@@ -21,7 +21,6 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center}
-    body[data-locked="true"] .shell{filter:blur(6px);pointer-events:none;user-select:none;}
     .shell{width:min(1200px,98vw);margin:auto}
     .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
@@ -65,8 +64,6 @@
     .attachment-preview img{max-width:100%;border-radius:8px}
     .entry .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
     .badge-small{padding:4px 8px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px}
-    .lockscreen{position:fixed;inset:0;background:rgba(13,16,37,.92);display:flex;align-items:center;justify-content:center;z-index:10;padding:18px}
-    .lock-card{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:18px;max-width:420px;width:100%;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
     .stack{display:flex;flex-direction:column;gap:6px}
     .forum-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .attachment-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -74,22 +71,7 @@
     @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}.forum-tools{grid-template-columns:1fr}}
   </style>
 </head>
-<body data-locked="true">
-  <div class="lockscreen" id="lockScreen" aria-live="polite">
-    <div class="lock-card">
-      <div class="eyebrow">Zugang schützt eure Privatsphäre</div>
-      <h2 style="margin:0">Bitte Passwort eingeben</h2>
-      <div class="stack">
-        <label for="passInput">Passwort</label>
-        <input id="passInput" type="password" placeholder="Passwort" autocomplete="current-password" />
-      </div>
-      <div class="subtle">Die Seite ist nur mit dem gemeinsamen Passwort nutzbar. Offline bleibt ihr entsperrt, solange die Sitzung offen ist.</div>
-      <button id="unlockBtn" type="button">Entsperren</button>
-      <div class="subtle" id="lockFeedback"></div>
-    </div>
-  </div>
-
-  <div class="shell" aria-hidden="true">
+<body>
     <div class="hero">
       <header>
         <div>
@@ -256,8 +238,6 @@
   document.getElementById('copySync').addEventListener('click', copySyncCode);
   document.getElementById('importBtn').addEventListener('click', importSyncCode);
   document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
-  document.getElementById('unlockBtn').addEventListener('click', unlock);
-  document.getElementById('passInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') unlock(); });
   voiceBtn.addEventListener('click', toggleRecording);
   clearVoiceBtn.addEventListener('click', ()=>{ currentVoice = null; renderVoicePreview(); });
   photoInput.addEventListener('change', handlePhotoSelect);
@@ -267,29 +247,6 @@
   let chunks = [];
   let currentVoice = null;
   let currentPhoto = null;
-
-  const unlockState = sessionStorage.getItem('unlocked');
-  if(unlockState === 'true') {
-    releaseLockscreen();
-  }
-
-  function unlock(){
-    const input = document.getElementById('passInput').value.trim();
-    const feedback = document.getElementById('lockFeedback');
-    if(input === 'milovel'){
-      sessionStorage.setItem('unlocked','true');
-      releaseLockscreen();
-      feedback.textContent = '';
-    } else {
-      feedback.textContent = 'Falsches Passwort. Bitte versuche es erneut.';
-    }
-  }
-
-  function releaseLockscreen(){
-    document.body.dataset.locked = 'false';
-    document.getElementById('lockScreen').style.display = 'none';
-    document.querySelector('.shell').setAttribute('aria-hidden','false');
-  }
 
   function load(){
     try{
