@@ -21,11 +21,11 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
-    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center;min-height:100vh;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:rgba(255,255,255,0)}
+    body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;flex-direction:column;align-items:center;min-height:100vh;gap:14px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:rgba(255,255,255,0)}
     @supports(padding:max(0px)){
       body{padding-top:max(12px,env(safe-area-inset-top));padding-right:max(12px,env(safe-area-inset-right));padding-bottom:max(12px,env(safe-area-inset-bottom));padding-left:max(12px,env(safe-area-inset-left))}
     }
-    .shell{width:min(1200px,98vw);margin:auto}
+    .shell{width:min(1200px,98vw);margin:auto;display:flex;flex-direction:column;gap:14px}
     .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
     h1{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:-0.3px}
@@ -65,6 +65,11 @@
     .summary-card{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:flex;flex-direction:column;gap:8px}
     .switch-btn{padding:10px 12px;border-radius:10px;border:1px solid var(--outline);background:rgba(255,255,255,.05);color:var(--ink);font-weight:800;cursor:pointer;box-shadow:none}
     .switch-btn[data-active="true"]{background:rgba(125,214,255,.16);border-color:var(--accent);color:#0b1228}
+    .role-toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;padding:8px;border-radius:999px;border:1px solid var(--outline);background:#0f1329;color:var(--muted);font-weight:800;min-width:190px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer}
+    .role-toggle .thumb{position:absolute;top:4px;left:4px;width:calc(50% - 6px);height:calc(100% - 8px);border-radius:999px;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);transition:transform .18s ease}
+    .role-toggle[data-role="prince"] .thumb{transform:translateX(100%)}
+    .role-toggle .label{position:relative;text-align:center;z-index:1}
+    .role-toggle[data-role="princess"] .label.left,.role-toggle[data-role="prince"] .label.right{color:#0b1228}
     .attachment-preview{border:1px solid var(--outline);border-radius:10px;padding:10px;background:#0f1329;margin-top:6px}
     .attachment-preview img{max-width:100%;border-radius:8px}
     .entry .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -73,10 +78,11 @@
     .forum-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .attachment-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .read-toggle{margin-top:6px}
-    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}.forum-tools{grid-template-columns:1fr}}
+    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}.forum-tools{grid-template-columns:1fr}.role-toggle{min-width:0}}
   </style>
 </head>
 <body>
+  <div class="shell">
     <div class="hero">
       <header>
         <div>
@@ -103,7 +109,11 @@
             <strong>Wer bist du?</strong>
             <div class="subtle">Schalte zwischen euch hin und her.</div>
           </div>
-          <div class="attachment-actions" id="roleSwitch"></div>
+          <div class="role-toggle" id="roleSwitch" role="switch" aria-checked="false" tabindex="0">
+            <div class="thumb" aria-hidden="true"></div>
+            <div class="label left">👸 N</div>
+            <div class="label right">🤴 E</div>
+          </div>
         </div>
 
         <div>
@@ -235,7 +245,7 @@
   let state = load();
   normalizeState();
   hydrateForm();
-  renderRoleSwitch();
+  initRoleToggle();
   renderMoods();
   renderFilters();
   renderEntries();
@@ -260,6 +270,8 @@
   let chunks = [];
   let currentVoice = null;
   let currentPhoto = null;
+  let activeStream = null;
+  const preferredMimeType = getPreferredMimeType();
 
   function load(){
     try{
@@ -308,23 +320,28 @@
     renderPhotoPreview();
   }
 
-  function renderRoleSwitch(){
-    roleSwitch.innerHTML = '';
-    Object.entries(roles).forEach(([key, meta]) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'switch-btn';
-      btn.textContent = meta.label;
-      btn.dataset.active = key === state.currentRole;
-      btn.addEventListener('click', ()=>{
-        state.currentRole = key;
-        persist();
-        renderRoleSwitch();
-        renderEntries();
-        renderFilters();
-      });
-      roleSwitch.appendChild(btn);
+  function initRoleToggle(){
+    const toggleRole = () => {
+      state.currentRole = state.currentRole === 'princess' ? 'prince' : 'princess';
+      persist();
+      updateRoleToggle();
+      renderEntries();
+      renderFilters();
+    };
+    roleSwitch.addEventListener('click', toggleRole);
+    roleSwitch.addEventListener('keydown', (evt) => {
+      if(evt.key === ' ' || evt.key === 'Enter'){
+        evt.preventDefault();
+        toggleRole();
+      }
     });
+    updateRoleToggle();
+  }
+
+  function updateRoleToggle(){
+    roleSwitch.dataset.role = state.currentRole;
+    roleSwitch.setAttribute('aria-checked', state.currentRole === 'prince');
+    roleSwitch.setAttribute('aria-label', `Aktive Rolle: ${roles[state.currentRole].label}`);
   }
 
   function renderMoods(){
@@ -597,6 +614,19 @@
     }
   }
 
+  function getPreferredMimeType(){
+    if(!supportsMediaRecorder || typeof MediaRecorder.isTypeSupported !== 'function') return null;
+    const candidates = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/aac'];
+    return candidates.find(type => MediaRecorder.isTypeSupported(type)) || null;
+  }
+
+  function stopStream(){
+    if(activeStream){
+      activeStream.getTracks().forEach(t => t.stop());
+      activeStream = null;
+    }
+  }
+
   async function toggleRecording(){
     if(!supportsMediaRecorder){
       voiceStatus.textContent = 'Auf diesem Gerät werden Sprachnachrichten nicht unterstützt.';
@@ -608,22 +638,28 @@
       return;
     }
     try{
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       chunks = [];
-      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder = new MediaRecorder(activeStream, preferredMimeType ? { mimeType: preferredMimeType } : undefined);
       mediaRecorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
+      mediaRecorder.onerror = () => {
+        voiceStatus.textContent = 'Aufnahme nicht möglich. Bitte erneut versuchen.';
+        stopStream();
+      };
       mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const chosenType = preferredMimeType || (chunks[0]?.type) || 'audio/webm';
+        const blob = new Blob(chunks, { type: chosenType });
         const data = await blobToBase64(blob);
         currentVoice = { data, type: blob.type, createdAt: Date.now() };
         renderVoicePreview();
-        stream.getTracks().forEach(t => t.stop());
+        stopStream();
       };
       mediaRecorder.start();
       voiceStatus.textContent = 'Aufnahme läuft ...';
       voiceBtn.textContent = 'Aufnahme stoppen';
     } catch (e){
       voiceStatus.textContent = 'Aufnahme nicht möglich. Bitte Mikrofon erlauben.';
+      stopStream();
     }
   }
 
