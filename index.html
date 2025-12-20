@@ -243,8 +243,6 @@
   document.getElementById('copySync').addEventListener('click', copySyncCode);
   document.getElementById('importBtn').addEventListener('click', importSyncCode);
   document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
-  document.getElementById('unlockBtn').addEventListener('click', unlock);
-  document.getElementById('passInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') unlock(); });
   voiceBtn.addEventListener('click', toggleRecording);
   clearVoiceBtn.addEventListener('click', ()=>{ currentVoice = null; renderVoicePreview(); });
   photoInput.addEventListener('change', handlePhotoSelect);
@@ -254,29 +252,6 @@
   let chunks = [];
   let currentVoice = null;
   let currentPhoto = null;
-
-  const unlockState = sessionStorage.getItem('unlocked');
-  if(unlockState === 'true') {
-    releaseLockscreen();
-  }
-
-  function unlock(){
-    const input = document.getElementById('passInput').value.trim();
-    const feedback = document.getElementById('lockFeedback');
-    if(input === 'milovel'){
-      sessionStorage.setItem('unlocked','true');
-      releaseLockscreen();
-      feedback.textContent = '';
-    } else {
-      feedback.textContent = 'Falsches Passwort. Bitte versuche es erneut.';
-    }
-  }
-
-  function releaseLockscreen(){
-    document.body.dataset.locked = 'false';
-    document.getElementById('lockScreen').style.display = 'none';
-    document.querySelector('.shell').setAttribute('aria-hidden','false');
-  }
 
   function load(){
     try{
