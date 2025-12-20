@@ -57,6 +57,8 @@
     .entry{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:grid;grid-template-columns:auto 1fr;gap:10px}
     .entry .tag{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;display:inline-flex;align-items:center;gap:6px}
     .entry small{color:var(--muted)}
+    .questions{display:grid;gap:8px}
+    .question{padding:10px 12px;border-radius:10px;border:1px dashed var(--outline);background:rgba(255,255,255,.04)}
     .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .section-title h2{margin:0;font-size:18px}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
@@ -145,6 +147,12 @@
           <textarea id="topic" placeholder="Was möchtest du teilen oder besprechen?"></textarea>
           <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt als Forumspost, bis ihr ihn abhakt oder die 14 Tage vorbei sind.</div>
         </div>
+        <div class="section-title">
+          <h2>Mood Check-up</h2>
+          <button id="refreshQuestions" type="button" class="ghost">Fragen aktualisieren</button>
+        </div>
+        <div class="subtle">Drei kurze Impulse passend zu deiner aktuellen Stimmung.</div>
+        <div class="questions" id="questionBox"></div>
 
         <div class="row">
           <div class="pill" style="flex-direction:column;align-items:flex-start">
@@ -220,6 +228,43 @@
     { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
     { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' },
   ];
+  const questionPool = {
+    ruhig: [
+      'Was hat dir heute Ruhe gegeben?',
+      'Gibt es etwas, das du gern so beibehalten möchtest?',
+      'Welche Kleinigkeit können wir heute teilen?'
+    ],
+    gestresst: [
+      'Was frisst gerade die meiste Energie?',
+      'Wobei würdest du dir kurze Unterstützung wünschen?',
+      'Was könnte dir helfen, einmal durchzuatmen?'
+    ],
+    müde: [
+      'Was hat dich heute erschöpft?',
+      'Was braucht heute keinen Perfektionismus?',
+      'Gibt es etwas, das du verschieben kannst?'
+    ],
+    freudig: [
+      'Was hat dich heute gefreut?',
+      'Wen möchtest du an deiner Freude teilhaben lassen?',
+      'Was können wir davon festhalten?'
+    ],
+    genervt: [
+      'Was nervt dich konkret?',
+      'Braucht es nur Gehör oder eine Lösung?',
+      'Was wäre ein kleiner Schritt, der Druck rausnimmt?'
+    ],
+    dankbar: [
+      'Wofür bist du heute dankbar?',
+      'Möchtest du jemandem Danke sagen?',
+      'Welche Geste hat dich berührt?'
+    ],
+    fallback: [
+      'Welche Überschrift hätte dein Tag?',
+      'Was darf dein Partner jetzt über dich wissen?',
+      'Wie kann man dir heute etwas Gutes tun?'
+    ]
+  };
   const roles = {
     princess: { label:'👸 N', color:'accent' },
     prince: { label:'🤴 E', color:'accent2' }
@@ -247,9 +292,11 @@
   const clearPhotoBtn = document.getElementById('clearPhoto');
   const syncFeedback = document.getElementById('syncFeedback');
   const importArea = document.getElementById('importArea');
+  const questionBox = document.getElementById('questionBox');
+  const refreshQuestionsBtn = document.getElementById('refreshQuestions');
   const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
 
-  const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null };
+  const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null, questions: [] };
   let state = load();
   normalizeState();
   hydrateForm();
@@ -257,12 +304,15 @@
   renderMoods();
   renderFilters();
   renderEntries();
+  renderQuestions();
+  if(!state.questions.length) refreshQuestions();
 
   document.getElementById('saveBtn').addEventListener('click', saveEntry);
   document.getElementById('copySummary').addEventListener('click', copySummary);
   document.getElementById('copySync').addEventListener('click', copySyncCode);
   document.getElementById('importBtn').addEventListener('click', importSyncCode);
   document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
+  refreshQuestionsBtn.addEventListener('click', refreshQuestions);
   if(!supportsMediaRecorder){
     voiceBtn.disabled = true;
     voiceBtn.textContent = 'Aufnahme nicht unterstützt';
@@ -298,6 +348,7 @@
   function normalizeState(){
     if(!Array.isArray(state.entries)) state.entries = [];
     if(!Array.isArray(state.archived)) state.archived = [];
+    if(!Array.isArray(state.questions)) state.questions = [];
     if(!state.currentRole) state.currentRole = 'princess';
     const cutoff = Date.now() - TTL_MS;
     const archivedMap = new Map(state.archived.map(a => [a.id, a]));
@@ -388,6 +439,7 @@
         state.lastMood = m.id;
         persist();
         renderMoods();
+        refreshQuestions();
       });
 
       const icon = document.createElement('div');
@@ -532,6 +584,32 @@
     summaryCard.append(summaryTitle, summaryText);
   }
 
+  function renderQuestions(){
+    questionBox.innerHTML = '';
+    if(!state.questions || state.questions.length === 0){
+      const placeholder = document.createElement('div');
+      placeholder.className = 'subtle';
+      placeholder.textContent = 'Noch keine Fragen geladen.';
+      questionBox.appendChild(placeholder);
+      return;
+    }
+    state.questions.forEach(q => {
+      const node = document.createElement('div');
+      node.className = 'question';
+      node.textContent = q;
+      questionBox.appendChild(node);
+    });
+  }
+
+  function refreshQuestions(){
+    const mood = state.lastMood;
+    const pool = questionPool[mood] || questionPool.fallback;
+    const shuffled = [...pool].sort(()=>Math.random()-0.5);
+    state.questions = shuffled.slice(0,3);
+    persist();
+    renderQuestions();
+  }
+
   function enrichEntry(entry){
     return {
       readBy: { princess:false, prince:false, ...(entry.readBy || {}) },
@@ -565,10 +643,12 @@
     };
 
     state.entries.push(entry);
+    state.filter = null;
     persist();
     hydrateForm();
     renderEntries();
     renderFilters();
+    refreshQuestions();
     syncFeedback.textContent = 'Gespeichert. Vergiss nicht, den Sync-Code zu teilen, wenn ihr Geräte wechselt.';
   }
 
@@ -717,7 +797,8 @@
       timestamp: Date.now(),
       entries: state.entries,
       archived: state.archived,
-      lastMood: state.lastMood
+      lastMood: state.lastMood,
+      questions: state.questions
     };
     return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
   }
@@ -734,10 +815,12 @@
       if(Array.isArray(data.entries)) state.entries = data.entries.map(enrichEntry);
       if(Array.isArray(data.archived)) state.archived = data.archived;
       if(data.lastMood) state.lastMood = data.lastMood;
+      if(Array.isArray(data.questions)) state.questions = data.questions;
       normalizeState();
       renderEntries();
       renderFilters();
       renderMoods();
+      renderQuestions();
       syncFeedback.textContent = 'Sync-Code geladen. Alle Posts sind übernommen.';
     } catch (e){
       syncFeedback.textContent = 'Konnte Code nicht lesen. Bitte noch einmal prüfen.';
