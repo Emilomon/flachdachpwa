@@ -21,6 +21,7 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{background:radial-gradient(circle at 20% 20%,rgba(125,214,255,.15),transparent 28%),radial-gradient(circle at 80% 0%,rgba(179,255,220,.16),transparent 30%),var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;padding:12px;display:flex;justify-content:center}
+    body[data-locked="true"] .shell{filter:blur(6px);pointer-events:none;user-select:none;}
     .shell{width:min(1200px,98vw);margin:auto}
     .hero{background:linear-gradient(135deg,rgba(125,214,255,.24),rgba(179,255,220,.14));border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow)}
     header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
@@ -32,10 +33,10 @@
     .layout{margin-top:14px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:14px}
     .panel{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
     label{font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
-    textarea, input[type="text"]{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:14px;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
-    textarea:focus, input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.14)}
+    textarea, input[type="text"], input[type="password"], input[type="file"], select{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:14px;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
+    textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus, input[type="file"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.14)}
     textarea{min-height:120px;resize:vertical}
-    .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;align-items:end}
+    .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;align-items:end}
     .subtle{color:var(--muted);font-size:13px}
     .moods{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
     .mood{border:1px solid var(--outline);border-radius:12px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#0f1329;transition:border .15s ease,transform .1s ease}
@@ -46,31 +47,55 @@
     button{appearance:none;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);border:none;color:#0b1228;font-weight:800;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;box-shadow:0 10px 30px rgba(125,214,255,.26);transition:transform .1s ease,box-shadow .1s ease}
     button:active{transform:translateY(1px);box-shadow:0 6px 18px rgba(125,214,255,.26)}
     .ghost{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--outline);box-shadow:none}
-    .switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+    .switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
     .pill{padding:10px 12px;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
     .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px}
     .entry{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:grid;grid-template-columns:auto 1fr;gap:10px}
     .entry .tag{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;display:inline-flex;align-items:center;gap:6px}
     .entry small{color:var(--muted)}
-    .questions{display:grid;gap:8px}
-    .question{padding:10px 12px;border-radius:10px;border:1px dashed var(--outline);background:rgba(255,255,255,.04)}
     .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .section-title h2{margin:0;font-size:18px}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
     .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--outline);color:var(--ink);background:rgba(255,255,255,.05);cursor:pointer;transition:border .12s ease}
     .chip[data-active="true"]{border-color:var(--accent);background:rgba(125,214,255,.14);color:#0b1228}
     .summary-card{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:flex;flex-direction:column;gap:8px}
-    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}}
+    .switch-btn{padding:10px 12px;border-radius:10px;border:1px solid var(--outline);background:rgba(255,255,255,.05);color:var(--ink);font-weight:800;cursor:pointer;box-shadow:none}
+    .switch-btn[data-active="true"]{background:rgba(125,214,255,.16);border-color:var(--accent);color:#0b1228}
+    .attachment-preview{border:1px solid var(--outline);border-radius:10px;padding:10px;background:#0f1329;margin-top:6px}
+    .attachment-preview img{max-width:100%;border-radius:8px}
+    .entry .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    .badge-small{padding:4px 8px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px}
+    .lockscreen{position:fixed;inset:0;background:rgba(13,16,37,.92);display:flex;align-items:center;justify-content:center;z-index:10;padding:18px}
+    .lock-card{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:18px;max-width:420px;width:100%;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+    .stack{display:flex;flex-direction:column;gap:6px}
+    .forum-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .attachment-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .read-toggle{margin-top:6px}
+    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}.forum-tools{grid-template-columns:1fr}}
   </style>
 </head>
-<body>
-  <div class="shell">
+<body data-locked="true">
+  <div class="lockscreen" id="lockScreen" aria-live="polite">
+    <div class="lock-card">
+      <div class="eyebrow">Zugang schützt eure Privatsphäre</div>
+      <h2 style="margin:0">Bitte Passwort eingeben</h2>
+      <div class="stack">
+        <label for="passInput">Passwort</label>
+        <input id="passInput" type="password" placeholder="Passwort" autocomplete="current-password" />
+      </div>
+      <div class="subtle">Die Seite ist nur mit dem gemeinsamen Passwort nutzbar. Offline bleibt ihr entsperrt, solange die Sitzung offen ist.</div>
+      <button id="unlockBtn" type="button">Entsperren</button>
+      <div class="subtle" id="lockFeedback"></div>
+    </div>
+  </div>
+
+  <div class="shell" aria-hidden="true">
     <div class="hero">
       <header>
         <div>
           <div class="eyebrow">Zweisam, auch wenn wenig Zeit ist</div>
           <h1>Unser Check-in</h1>
-          <p>Teilt eure Stimmung, legt Themen ab und lasst euch kurze Fragen vorschlagen. So bleibt ihr verbunden, auch wenn die Zeit knapp ist.</p>
+          <p>Teilt eure Stimmung, sprecht per Text oder Sprachnachricht, hängt Fotos an und haltet den Überblick wie in einem kleinen Forum.</p>
         </div>
         <div class="badges">
           <div class="badge">PWA · offlinefähig</div>
@@ -85,16 +110,15 @@
           <h2>Check-in schreiben</h2>
           <button id="saveBtn" type="button">Sichern & teilen</button>
         </div>
-        <div class="row">
+
+        <div class="pill">
           <div>
-            <label for="meName">Dein Name</label>
-            <input id="meName" type="text" placeholder="z. B. Anna" autocomplete="name">
+            <strong>Wer bist du?</strong>
+            <div class="subtle">Schalte zwischen euch hin und her.</div>
           </div>
-          <div>
-            <label for="partnerName">Name deines Partners/deiner Partnerin</label>
-            <input id="partnerName" type="text" placeholder="z. B. Ben" autocomplete="name">
-          </div>
+          <div class="attachment-actions" id="roleSwitch"></div>
         </div>
+
         <div>
           <label>Wie fühlst du dich?</label>
           <div class="moods" id="moodList"></div>
@@ -121,29 +145,64 @@
         </div>
         <div>
           <label for="topic">Thema festhalten</label>
-          <textarea id="topic" placeholder="Was möchtest du später teilen oder besprechen?"></textarea>
-          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt gespeichert, bis ihr ihn abhakt.</div>
+          <textarea id="topic" placeholder="Was möchtest du teilen oder besprechen?"></textarea>
+          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt als Forumspost, bis ihr ihn abhakt oder die 14 Tage vorbei sind.</div>
         </div>
-        <div class="section-title">
-          <h2>KI-Fragen für heute</h2>
-          <button id="refreshQuestions" type="button" class="ghost">Neue Fragen holen</button>
+
+        <div class="row">
+          <div class="pill" style="flex-direction:column;align-items:flex-start">
+            <div class="section-title" style="width:100%">
+              <h3 style="margin:0;font-size:16px">Sprachnachricht</h3>
+              <button id="voiceBtn" type="button" class="ghost">Aufnahme starten</button>
+            </div>
+            <div class="subtle" id="voiceStatus">Bereit zum Aufnehmen.</div>
+            <div class="attachment-preview" id="voicePreview" hidden>
+              <audio controls style="width:100%"></audio>
+              <button id="clearVoice" type="button" class="ghost" style="margin-top:6px">Sprachnachricht entfernen</button>
+            </div>
+          </div>
+          <div class="pill" style="flex-direction:column;align-items:flex-start">
+            <h3 style="margin:0;font-size:16px">Foto anhängen</h3>
+            <input id="photoInput" type="file" accept="image/*" />
+            <div class="attachment-preview" id="photoPreview" hidden>
+              <img alt="Angehängtes Foto" />
+              <button id="clearPhoto" type="button" class="ghost" style="margin-top:6px">Foto entfernen</button>
+            </div>
+            <div class="subtle">Optionales Foto zu deinem Eintrag.</div>
+          </div>
         </div>
-        <div class="questions" id="questionBox"></div>
       </div>
 
       <div class="panel">
         <div class="section-title">
-          <h2>Offene Themen</h2>
+          <h2>Forum</h2>
           <div class="chips" id="filters"></div>
         </div>
         <div class="list" id="entryList"></div>
         <div class="section-title">
-          <h2>Zusammenfassung für deinen Partner</h2>
+          <h2>Zusammenfassung</h2>
           <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
         </div>
         <div class="summary-card" id="summaryCard">
           <strong>Keine Einträge vorhanden</strong>
-          <div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung, die du z. B. per Messenger teilen kannst.</div>
+          <div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung.</div>
+        </div>
+
+        <div class="section-title">
+          <h2>Forum-Sync für andere Geräte</h2>
+          <div class="chips">
+            <div class="chip" data-active="true" aria-hidden="true">Passwortgeschützt</div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="subtle">Kopiere den Sync-Code und füge ihn auf einem anderen Gerät ein, damit dort alle Posts erscheinen. Archivierte Posts (älter als 14 Tage) bleiben im Code, werden aber nicht angezeigt.</div>
+          <div class="forum-tools">
+            <button id="copySync" type="button">Sync-Code kopieren</button>
+            <button id="exportArchive" type="button" class="ghost">Archiv anzeigen & kopieren</button>
+          </div>
+          <textarea id="importArea" placeholder="Sync-Code hier einfügen und laden" style="margin-top:10px"></textarea>
+          <button id="importBtn" type="button" class="ghost">Code laden</button>
+          <div class="subtle" id="syncFeedback"></div>
         </div>
       </div>
     </div>
@@ -151,16 +210,8 @@
 
 <script>
 (function(){
-  const STORAGE_KEY = 'tandem-checkins-v1';
-  const moodList = document.getElementById('moodList');
-  const entryList = document.getElementById('entryList');
-  const filters = document.getElementById('filters');
-  const questionBox = document.getElementById('questionBox');
-  const lastUpdate = document.getElementById('lastUpdate');
-  const summaryCard = document.getElementById('summaryCard');
-  const meNameInput = document.getElementById('meName');
-  const partnerNameInput = document.getElementById('partnerName');
-
+  const STORAGE_KEY = 'tandem-checkins-v2';
+  const TTL_MS = 14 * 24 * 60 * 60 * 1000;
   const moods = [
     { id:'ruhig', label:'Ruhig', emoji:'🌿', tone:'ausgeglichen' },
     { id:'gestresst', label:'Gestresst', emoji:'⚡️', tone:'unter Strom' },
@@ -169,64 +220,76 @@
     { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
     { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' },
   ];
-
-  const questionPool = {
-    ruhig: [
-      'Was hat dir heute Ruhe gegeben?',
-      'Gibt es etwas, das du gern so beibehalten möchtest?',
-      'Welche Kleinigkeit können wir heute teilen?'
-    ],
-    gestresst: [
-      'Was frisst gerade die meiste Energie?',
-      'Wobei würdest du dir kurze Unterstützung wünschen?',
-      'Was könnte dir helfen, einmal durchzuatmen?'
-    ],
-    müde: [
-      'Was hat dich heute erschöpft?',
-      'Was braucht heute keinen Perfektionismus?',
-      'Gibt es etwas, das du verschieben kannst?'
-    ],
-    freudig: [
-      'Was hat dich heute gefreut?',
-      'Wen möchtest du an deiner Freude teilhaben lassen?',
-      'Was können wir davon festhalten?'
-    ],
-    genervt: [
-      'Was nervt dich konkret?',
-      'Braucht es nur Gehör oder eine Lösung?',
-      'Was wäre ein kleiner Schritt, der Druck rausnimmt?'
-    ],
-    dankbar: [
-      'Wofür bist du heute dankbar?',
-      'Möchtest du jemandem Danke sagen?',
-      'Welche Geste hat dich berührt?'
-    ],
-    fallback: [
-      'Welche Überschrift hätte dein Tag?',
-      'Was darf dein Partner jetzt über dich wissen?',
-      'Wie kann man dir heute etwas Gutes tun?'
-    ]
+  const roles = {
+    princess: { label:'👸 N', color:'accent' },
+    prince: { label:'🤴 E', color:'accent2' }
   };
 
-  const defaultState = {
-    entries: [],
-    lastMood: 'ruhig',
-    meName: '',
-    partnerName: ''
-  };
+  const moodList = document.getElementById('moodList');
+  const entryList = document.getElementById('entryList');
+  const filters = document.getElementById('filters');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const summaryCard = document.getElementById('summaryCard');
+  const roleSwitch = document.getElementById('roleSwitch');
+  const voiceBtn = document.getElementById('voiceBtn');
+  const voiceStatus = document.getElementById('voiceStatus');
+  const voicePreview = document.getElementById('voicePreview');
+  const voiceAudio = voicePreview.querySelector('audio');
+  const clearVoiceBtn = document.getElementById('clearVoice');
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+  const clearPhotoBtn = document.getElementById('clearPhoto');
+  const syncFeedback = document.getElementById('syncFeedback');
+  const importArea = document.getElementById('importArea');
 
+  const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null };
   let state = load();
+  normalizeState();
   hydrateForm();
+  renderRoleSwitch();
   renderMoods();
   renderFilters();
   renderEntries();
-  refreshQuestions();
 
   document.getElementById('saveBtn').addEventListener('click', saveEntry);
-  document.getElementById('refreshQuestions').addEventListener('click', refreshQuestions);
   document.getElementById('copySummary').addEventListener('click', copySummary);
-  meNameInput.addEventListener('input', () => { state.meName = meNameInput.value.trim(); persist(); renderFilters(); renderEntries(); });
-  partnerNameInput.addEventListener('input', () => { state.partnerName = partnerNameInput.value.trim(); persist(); renderFilters(); renderEntries(); });
+  document.getElementById('copySync').addEventListener('click', copySyncCode);
+  document.getElementById('importBtn').addEventListener('click', importSyncCode);
+  document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
+  document.getElementById('unlockBtn').addEventListener('click', unlock);
+  document.getElementById('passInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') unlock(); });
+  voiceBtn.addEventListener('click', toggleRecording);
+  clearVoiceBtn.addEventListener('click', ()=>{ currentVoice = null; renderVoicePreview(); });
+  photoInput.addEventListener('change', handlePhotoSelect);
+  clearPhotoBtn.addEventListener('click', ()=>{ currentPhoto = null; renderPhotoPreview(); });
+
+  let mediaRecorder = null;
+  let chunks = [];
+  let currentVoice = null;
+  let currentPhoto = null;
+
+  const unlockState = sessionStorage.getItem('unlocked');
+  if(unlockState === 'true') {
+    releaseLockscreen();
+  }
+
+  function unlock(){
+    const input = document.getElementById('passInput').value.trim();
+    const feedback = document.getElementById('lockFeedback');
+    if(input === 'milovel'){
+      sessionStorage.setItem('unlocked','true');
+      releaseLockscreen();
+      feedback.textContent = '';
+    } else {
+      feedback.textContent = 'Falsches Passwort. Bitte versuche es erneut.';
+    }
+  }
+
+  function releaseLockscreen(){
+    document.body.dataset.locked = 'false';
+    document.getElementById('lockScreen').style.display = 'none';
+    document.querySelector('.shell').setAttribute('aria-hidden','false');
+  }
 
   function load(){
     try{
@@ -242,12 +305,56 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function normalizeState(){
+    if(!Array.isArray(state.entries)) state.entries = [];
+    if(!Array.isArray(state.archived)) state.archived = [];
+    if(!state.currentRole) state.currentRole = 'princess';
+    const cutoff = Date.now() - TTL_MS;
+    const archivedMap = new Map(state.archived.map(a => [a.id, a]));
+    const fresh = [];
+    state.entries.forEach(entry => {
+      if(!entry.readBy) entry.readBy = { princess: false, prince: false };
+      if(entry.createdAt < cutoff){
+        entry.archivedAt = entry.archivedAt || Date.now();
+        if(!archivedMap.has(entry.id)){
+          archivedMap.set(entry.id, entry);
+        }
+      } else {
+        fresh.push(entry);
+      }
+    });
+    state.entries = fresh;
+    state.archived = Array.from(archivedMap.values());
+    persist();
+  }
+
   function hydrateForm(){
-    meNameInput.value = state.meName;
-    partnerNameInput.value = state.partnerName;
     document.getElementById('energy').value = 5;
     document.getElementById('topic').value = '';
     document.getElementById('talkIntent').value = 'wenn Zeit';
+    currentVoice = null;
+    currentPhoto = null;
+    renderVoicePreview();
+    renderPhotoPreview();
+  }
+
+  function renderRoleSwitch(){
+    roleSwitch.innerHTML = '';
+    Object.entries(roles).forEach(([key, meta]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'switch-btn';
+      btn.textContent = meta.label;
+      btn.dataset.active = key === state.currentRole;
+      btn.addEventListener('click', ()=>{
+        state.currentRole = key;
+        persist();
+        renderRoleSwitch();
+        renderEntries();
+        renderFilters();
+      });
+      roleSwitch.appendChild(btn);
+    });
   }
 
   function renderMoods(){
@@ -266,7 +373,6 @@
         state.lastMood = m.id;
         persist();
         renderMoods();
-        refreshQuestions();
       });
 
       const icon = document.createElement('div');
@@ -287,16 +393,21 @@
 
   function renderFilters(){
     filters.innerHTML = '';
-    const names = [state.meName || 'Ich', state.partnerName || 'Partner'];
-    ['alle', ...names].forEach(f => {
+    const chipData = [
+      { value: 'all', label: 'Alle Posts' },
+      { value: 'princess', label: roles.princess.label },
+      { value: 'prince', label: roles.prince.label },
+      { value: 'unread', label: 'Ungelesen' }
+    ];
+    chipData.forEach(ch => {
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.className = 'chip';
-      chip.textContent = f === 'alle' ? 'Alle Einträge' : f;
-      chip.dataset.value = f;
-      chip.dataset.active = state.filter === f || (!state.filter && f === 'alle');
+      chip.textContent = ch.label;
+      chip.dataset.value = ch.value;
+      chip.dataset.active = state.filter ? state.filter === ch.value : ch.value === 'all';
       chip.addEventListener('click', () => {
-        state.filter = f === 'alle' ? null : f;
+        state.filter = ch.value === 'all' ? null : ch.value;
         persist();
         renderFilters();
         renderEntries();
@@ -306,9 +417,15 @@
   }
 
   function renderEntries(){
+    normalizeState();
     entryList.innerHTML = '';
     const list = state.entries
-      .filter(e => !state.filter || e.author === state.filter)
+      .map(enrichEntry)
+      .filter(e => {
+        if(!state.filter || state.filter === 'all') return true;
+        if(state.filter === 'unread') return !e.readBy[state.currentRole];
+        return e.authorRole === state.filter;
+      })
       .sort((a,b)=>b.createdAt-a.createdAt);
 
     if(list.length === 0){
@@ -333,16 +450,19 @@
 
       const body = document.createElement('div');
       const headerLine = document.createElement('div');
+      headerLine.className = 'meta';
       const author = document.createElement('strong');
-      author.textContent = entry.author;
+      author.textContent = entry.authorLabel;
       const time = document.createElement('small');
       time.textContent = formatter.format(entry.createdAt);
-      headerLine.append(author, document.createTextNode(' · '), time);
-
-      const infoLine = document.createElement('div');
-      const info = document.createElement('small');
-      info.textContent = `Energie: ${entry.energy}/10 · Wunsch: ${entry.talkIntent}`;
-      infoLine.append(info);
+      const energy = document.createElement('small');
+      energy.textContent = `Energie: ${entry.energy}/10`;
+      const intent = document.createElement('small');
+      intent.textContent = `Wunsch: ${entry.talkIntent}`;
+      const readBadge = document.createElement('span');
+      readBadge.className = 'badge-small';
+      readBadge.textContent = entry.readBy[state.currentRole] ? 'Für dich gelesen' : 'Für dich ungelesen';
+      headerLine.append(author, document.createTextNode(' · '), time, energy, intent, readBadge);
 
       const topicLine = document.createElement('div');
       topicLine.style.marginTop = '6px';
@@ -355,8 +475,34 @@
         topicLine.append(empty);
       }
 
-      body.append(headerLine, infoLine, topicLine);
+      if(entry.voiceNote){
+        const voiceWrap = document.createElement('div');
+        voiceWrap.className = 'attachment-preview';
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = entry.voiceNote.data;
+        voiceWrap.append(document.createTextNode('Sprachnachricht'), audio);
+        body.appendChild(voiceWrap);
+      }
 
+      if(entry.photo){
+        const photoWrap = document.createElement('div');
+        photoWrap.className = 'attachment-preview';
+        const img = document.createElement('img');
+        img.src = entry.photo.data;
+        img.alt = 'Angehängtes Foto';
+        photoWrap.append(document.createTextNode('Foto'), img);
+        body.appendChild(photoWrap);
+      }
+
+      const readBtn = document.createElement('button');
+      readBtn.type = 'button';
+      readBtn.className = 'ghost read-toggle';
+      const isRead = entry.readBy[state.currentRole];
+      readBtn.textContent = isRead ? 'Als ungelesen markieren' : 'Als gelesen markieren';
+      readBtn.addEventListener('click', () => toggleRead(entry.id, !isRead));
+
+      body.append(headerLine, topicLine, readBtn);
       node.append(tag, body);
       entryList.appendChild(node);
     });
@@ -365,15 +511,21 @@
     lastUpdate.textContent = 'Letzter Eintrag: ' + formatter.format(latest.createdAt);
     summaryCard.innerHTML = '';
     const summaryTitle = document.createElement('strong');
-    summaryTitle.textContent = `Kurzinfo für ${state.partnerName || 'deinen Partner'}`;
+    summaryTitle.textContent = `Kurzinfo für ${state.currentRole === 'princess' ? roles.prince.label : roles.princess.label}`;
     const summaryText = document.createElement('div');
     summaryText.textContent = buildSummary(latest);
     summaryCard.append(summaryTitle, summaryText);
   }
 
+  function enrichEntry(entry){
+    return {
+      readBy: { princess:false, prince:false, ...(entry.readBy || {}) },
+      ...entry,
+      authorLabel: roles[entry.authorRole]?.label || entry.authorLabel || 'Unbekannt'
+    };
+  }
+
   function saveEntry(){
-    const author = meNameInput.value.trim() || 'Ich';
-    const partner = partnerNameInput.value.trim() || 'dein Partner';
     const mood = state.lastMood || 'ruhig';
     const moodMeta = moods.find(m => m.id === mood) || moods[0];
     const energy = Number(document.getElementById('energy').value) || 5;
@@ -383,49 +535,50 @@
 
     const entry = {
       id: crypto.randomUUID ? crypto.randomUUID() : `${createdAt}-${Math.random()}`,
-      author,
-      partner,
+      authorRole: state.currentRole,
+      authorLabel: roles[state.currentRole].label,
       mood,
       moodLabel: moodMeta.label,
       emoji: moodMeta.emoji,
       energy,
       talkIntent,
       topic,
-      createdAt
+      createdAt,
+      voiceNote: currentVoice,
+      photo: currentPhoto,
+      readBy: { princess: state.currentRole === 'princess', prince: state.currentRole === 'prince' }
     };
 
     state.entries.push(entry);
-    state.meName = author;
-    state.partnerName = partner === 'dein Partner' ? '' : partner;
     persist();
     hydrateForm();
-    renderFilters();
     renderEntries();
-    refreshQuestions();
+    renderFilters();
+    syncFeedback.textContent = 'Gespeichert. Vergiss nicht, den Sync-Code zu teilen, wenn ihr Geräte wechselt.';
   }
 
-  function refreshQuestions(){
-    const mood = state.lastMood;
-    const pool = questionPool[mood] || questionPool.fallback;
-    const shuffled = [...pool].sort(()=>Math.random()-0.5);
-    const picked = shuffled.slice(0,3);
-
-    questionBox.innerHTML = '';
-    picked.forEach(q => {
-      const node = document.createElement('div');
-      node.className = 'question';
-      node.textContent = q;
-      questionBox.appendChild(node);
+  function toggleRead(id, value){
+    state.entries = state.entries.map(entry => {
+      if(entry.id !== id) return entry;
+      const updated = { ...entry, readBy: { princess:false, prince:false, ...(entry.readBy||{}) } };
+      updated.readBy[state.currentRole] = value;
+      return updated;
     });
+    persist();
+    renderEntries();
   }
 
   function buildSummary(entry){
-    const intro = `${entry.author} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie).`;
+    const intro = `${entry.authorLabel} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie).`;
     const ask = entry.talkIntent === 'nur Info'
       ? 'Keine Antwort nötig, einfach nur teilen.'
       : `Wunsch: ${entry.talkIntent}.`;
     const topic = entry.topic ? `Notiz: "${entry.topic}".` : 'Keine extra Notiz.';
-    return `${intro} ${topic} ${ask}`;
+    const extras = [];
+    if(entry.voiceNote) extras.push('Sprachnachricht angehängt');
+    if(entry.photo) extras.push('Foto angehängt');
+    const extraText = extras.length ? `Extras: ${extras.join(', ')}.` : '';
+    return `${intro} ${topic} ${ask} ${extraText}`.trim();
   }
 
   async function copySummary(){
@@ -437,6 +590,129 @@
       summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">In die Zwischenablage kopiert.</div>');
     }catch(e){
       summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">Kopieren nicht möglich. Bitte manuell markieren.</div>');
+    }
+  }
+
+  async function handlePhotoSelect(evt){
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      currentPhoto = { data: reader.result, name: file.name, type: file.type };
+      renderPhotoPreview();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderPhotoPreview(){
+    if(currentPhoto){
+      photoPreview.querySelector('img').src = currentPhoto.data;
+      photoPreview.hidden = false;
+    } else {
+      photoPreview.hidden = true;
+      photoInput.value = '';
+    }
+  }
+
+  function renderVoicePreview(){
+    if(currentVoice){
+      voiceAudio.src = currentVoice.data;
+      voicePreview.hidden = false;
+      voiceStatus.textContent = 'Sprachnachricht bereit.';
+      voiceBtn.textContent = 'Neu aufnehmen';
+    } else {
+      voicePreview.hidden = true;
+      voiceStatus.textContent = 'Bereit zum Aufnehmen.';
+      voiceBtn.textContent = 'Aufnahme starten';
+    }
+  }
+
+  async function toggleRecording(){
+    if(mediaRecorder && mediaRecorder.state === 'recording'){
+      mediaRecorder.stop();
+      voiceBtn.textContent = 'Verarbeite...';
+      return;
+    }
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      chunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const data = await blobToBase64(blob);
+        currentVoice = { data, type: blob.type, createdAt: Date.now() };
+        renderVoicePreview();
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mediaRecorder.start();
+      voiceStatus.textContent = 'Aufnahme läuft ...';
+      voiceBtn.textContent = 'Aufnahme stoppen';
+    } catch (e){
+      voiceStatus.textContent = 'Aufnahme nicht möglich. Bitte Mikrofon erlauben.';
+    }
+  }
+
+  function blobToBase64(blob){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function copySyncCode(){
+    const code = buildSyncCode();
+    try{
+      await navigator.clipboard.writeText(code);
+      syncFeedback.textContent = 'Sync-Code kopiert. Auf dem anderen Gerät einfügen und laden.';
+    } catch (e){
+      syncFeedback.textContent = 'Konnte nicht kopieren. Bitte Code markieren und manuell kopieren.';
+      importArea.value = code;
+    }
+  }
+
+  function buildSyncCode(){
+    const payload = {
+      version: 2,
+      timestamp: Date.now(),
+      entries: state.entries,
+      archived: state.archived,
+      lastMood: state.lastMood
+    };
+    return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  }
+
+  function importSyncCode(){
+    const code = importArea.value.trim();
+    if(!code){
+      syncFeedback.textContent = 'Bitte zuerst einen Code einfügen.';
+      return;
+    }
+    try{
+      const json = decodeURIComponent(escape(atob(code)));
+      const data = JSON.parse(json);
+      if(Array.isArray(data.entries)) state.entries = data.entries.map(enrichEntry);
+      if(Array.isArray(data.archived)) state.archived = data.archived;
+      if(data.lastMood) state.lastMood = data.lastMood;
+      normalizeState();
+      renderEntries();
+      renderFilters();
+      renderMoods();
+      syncFeedback.textContent = 'Sync-Code geladen. Alle Posts sind übernommen.';
+    } catch (e){
+      syncFeedback.textContent = 'Konnte Code nicht lesen. Bitte noch einmal prüfen.';
+    }
+  }
+
+  async function copyArchiveInfo(){
+    const info = state.archived.length ? state.archived.map(a => `${roles[a.authorRole]?.label || a.authorLabel || 'Unbekannt'} · ${new Date(a.createdAt).toLocaleDateString('de-DE')} · ${a.topic || 'Kein Text'}`).join('\n') : 'Keine archivierten Posts';
+    try{
+      await navigator.clipboard.writeText(info);
+      syncFeedback.textContent = 'Archiv kopiert. Ältere Posts bleiben im Sync-Code enthalten.';
+    } catch(e){
+      syncFeedback.textContent = 'Konnte Archiv nicht kopieren.';
     }
   }
 })();
