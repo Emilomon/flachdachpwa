@@ -33,7 +33,7 @@
     .eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9fd9ff;margin-bottom:4px;font-weight:700}
     .badges{display:flex;flex-wrap:wrap;gap:8px}
     .badge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-variant-numeric:tabular-nums;color:var(--ink);display:flex;align-items:center;gap:6px}
-    .layout{margin-top:14px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:14px}
+    .layout{margin-top:14px;display:flex;flex-direction:column;gap:14px}
     .panel{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
     label{font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
     textarea, input[type="text"], input[type="password"], input[type="file"], select{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:16px;line-height:1.4;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
@@ -78,7 +78,7 @@
     .forum-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .attachment-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .read-toggle{margin-top:6px}
-    @media (max-width:900px){body{padding:8px}.layout{grid-template-columns:1fr}.list{max-height:none}.forum-tools{grid-template-columns:1fr}.role-toggle{min-width:0}}
+    @media (max-width:900px){body{padding:8px}.layout{flex-direction:column}.list{max-height:none}.forum-tools{grid-template-columns:1fr}.role-toggle{min-width:0}}
   </style>
 </head>
 <body>
@@ -171,39 +171,13 @@
         <div class="section-title" style="justify-content:flex-end">
           <button id="saveBtn" type="button">Posten</button>
         </div>
-      </div>
 
-      <div class="panel">
         <div class="section-title">
-          <h2>Forum</h2>
+          <h2>Deine Check-ins</h2>
           <div class="chips" id="filters"></div>
         </div>
+        <div class="subtle">Nach dem Posten erscheint dein Beitrag direkt hier.</div>
         <div class="list" id="entryList"></div>
-        <div class="section-title">
-          <h2>Zusammenfassung</h2>
-          <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
-        </div>
-        <div class="summary-card" id="summaryCard">
-          <strong>Keine Einträge vorhanden</strong>
-          <div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung.</div>
-        </div>
-
-        <div class="section-title">
-          <h2>Forum-Sync für andere Geräte</h2>
-          <div class="chips">
-            <div class="chip" data-active="true" aria-hidden="true">Passwortgeschützt</div>
-          </div>
-        </div>
-        <div class="summary-card">
-          <div class="subtle">Kopiere den Sync-Code und füge ihn auf einem anderen Gerät ein, damit dort alle Posts erscheinen. Archivierte Posts (älter als 14 Tage) bleiben im Code, werden aber nicht angezeigt.</div>
-          <div class="forum-tools">
-            <button id="copySync" type="button">Sync-Code kopieren</button>
-            <button id="exportArchive" type="button" class="ghost">Archiv anzeigen & kopieren</button>
-          </div>
-          <textarea id="importArea" placeholder="Sync-Code hier einfügen und laden" style="margin-top:10px"></textarea>
-          <button id="importBtn" type="button" class="ghost">Code laden</button>
-          <div class="subtle" id="syncFeedback"></div>
-        </div>
       </div>
     </div>
   </div>
@@ -229,7 +203,6 @@
   const entryList = document.getElementById('entryList');
   const filters = document.getElementById('filters');
   const lastUpdate = document.getElementById('lastUpdate');
-  const summaryCard = document.getElementById('summaryCard');
   const roleSwitch = document.getElementById('roleSwitch');
   const roleIndicator = document.getElementById('roleIndicator');
   const roleLabels = {
@@ -245,8 +218,6 @@
   const photoInput = document.getElementById('photoInput');
   const photoPreview = document.getElementById('photoPreview');
   const clearPhotoBtn = document.getElementById('clearPhoto');
-  const syncFeedback = document.getElementById('syncFeedback');
-  const importArea = document.getElementById('importArea');
   const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
 
   const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null };
@@ -259,10 +230,6 @@
   renderEntries();
 
   document.getElementById('saveBtn').addEventListener('click', saveEntry);
-  document.getElementById('copySummary').addEventListener('click', copySummary);
-  document.getElementById('copySync').addEventListener('click', copySyncCode);
-  document.getElementById('importBtn').addEventListener('click', importSyncCode);
-  document.getElementById('exportArchive').addEventListener('click', copyArchiveInfo);
   if(!supportsMediaRecorder){
     voiceBtn.disabled = true;
     voiceBtn.textContent = 'Aufnahme nicht unterstützt';
@@ -448,7 +415,6 @@
       empty.className = 'subtle';
       empty.textContent = 'Noch keine Einträge. Schreib den ersten Check-in!';
       entryList.appendChild(empty);
-      summaryCard.innerHTML = '<strong>Keine Einträge vorhanden</strong><div class="subtle">Sobald du einen Check-in speicherst, erscheint hier eine kurze Zusammenfassung.</div>';
       lastUpdate.textContent = 'Keine Einträge';
       return;
     }
@@ -524,12 +490,6 @@
 
     const latest = list[0];
     lastUpdate.textContent = 'Letzter Eintrag: ' + formatter.format(latest.createdAt);
-    summaryCard.innerHTML = '';
-    const summaryTitle = document.createElement('strong');
-    summaryTitle.textContent = `Kurzinfo für ${state.currentRole === 'princess' ? roles.prince.label : roles.princess.label}`;
-    const summaryText = document.createElement('div');
-    summaryText.textContent = buildSummary(latest);
-    summaryCard.append(summaryTitle, summaryText);
   }
 
   function enrichEntry(entry){
@@ -569,7 +529,6 @@
     hydrateForm();
     renderEntries();
     renderFilters();
-    syncFeedback.textContent = 'Gespeichert. Vergiss nicht, den Sync-Code zu teilen, wenn ihr Geräte wechselt.';
   }
 
   function toggleRead(id, value){
@@ -581,31 +540,6 @@
     });
     persist();
     renderEntries();
-  }
-
-  function buildSummary(entry){
-    const intro = `${entry.authorLabel} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie).`;
-    const ask = entry.talkIntent === 'nur Info'
-      ? 'Keine Antwort nötig, einfach nur teilen.'
-      : `Wunsch: ${entry.talkIntent}.`;
-    const topic = entry.topic ? `Notiz: "${entry.topic}".` : 'Keine extra Notiz.';
-    const extras = [];
-    if(entry.voiceNote) extras.push('Sprachnachricht angehängt');
-    if(entry.photo) extras.push('Foto angehängt');
-    const extraText = extras.length ? `Extras: ${extras.join(', ')}.` : '';
-    return `${intro} ${topic} ${ask} ${extraText}`.trim();
-  }
-
-  async function copySummary(){
-    const list = state.entries.sort((a,b)=>b.createdAt-a.createdAt);
-    if(list.length === 0) return;
-    const text = buildSummary(list[0]);
-    try{
-      await navigator.clipboard.writeText(text);
-      summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">In die Zwischenablage kopiert.</div>');
-    }catch(e){
-      summaryCard.insertAdjacentHTML('beforeend','<div class="subtle">Kopieren nicht möglich. Bitte manuell markieren.</div>');
-    }
   }
 
   async function handlePhotoSelect(evt){
@@ -698,60 +632,6 @@
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
-  }
-
-  async function copySyncCode(){
-    const code = buildSyncCode();
-    try{
-      await navigator.clipboard.writeText(code);
-      syncFeedback.textContent = 'Sync-Code kopiert. Auf dem anderen Gerät einfügen und laden.';
-    } catch (e){
-      syncFeedback.textContent = 'Konnte nicht kopieren. Bitte Code markieren und manuell kopieren.';
-      importArea.value = code;
-    }
-  }
-
-  function buildSyncCode(){
-    const payload = {
-      version: 2,
-      timestamp: Date.now(),
-      entries: state.entries,
-      archived: state.archived,
-      lastMood: state.lastMood
-    };
-    return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  }
-
-  function importSyncCode(){
-    const code = importArea.value.trim();
-    if(!code){
-      syncFeedback.textContent = 'Bitte zuerst einen Code einfügen.';
-      return;
-    }
-    try{
-      const json = decodeURIComponent(escape(atob(code)));
-      const data = JSON.parse(json);
-      if(Array.isArray(data.entries)) state.entries = data.entries.map(enrichEntry);
-      if(Array.isArray(data.archived)) state.archived = data.archived;
-      if(data.lastMood) state.lastMood = data.lastMood;
-      normalizeState();
-      renderEntries();
-      renderFilters();
-      renderMoods();
-      syncFeedback.textContent = 'Sync-Code geladen. Alle Posts sind übernommen.';
-    } catch (e){
-      syncFeedback.textContent = 'Konnte Code nicht lesen. Bitte noch einmal prüfen.';
-    }
-  }
-
-  async function copyArchiveInfo(){
-    const info = state.archived.length ? state.archived.map(a => `${roles[a.authorRole]?.label || a.authorLabel || 'Unbekannt'} · ${new Date(a.createdAt).toLocaleDateString('de-DE')} · ${a.topic || 'Kein Text'}`).join('\n') : 'Keine archivierten Posts';
-    try{
-      await navigator.clipboard.writeText(info);
-      syncFeedback.textContent = 'Archiv kopiert. Ältere Posts bleiben im Sync-Code enthalten.';
-    } catch(e){
-      syncFeedback.textContent = 'Konnte Archiv nicht kopieren.';
-    }
   }
 })();
 </script>
