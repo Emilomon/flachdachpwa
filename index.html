@@ -65,11 +65,11 @@
     .summary-card{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:flex;flex-direction:column;gap:8px}
     .switch-btn{padding:10px 12px;border-radius:10px;border:1px solid var(--outline);background:rgba(255,255,255,.05);color:var(--ink);font-weight:800;cursor:pointer;box-shadow:none}
     .switch-btn[data-active="true"]{background:rgba(125,214,255,.16);border-color:var(--accent);color:#0b1228}
-    .role-toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;padding:8px;border-radius:999px;border:1px solid var(--outline);background:#0f1329;color:var(--muted);font-weight:800;min-width:190px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer}
+    .role-toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;padding:8px;border-radius:999px;border:1px solid var(--outline);background:#0f1329;color:var(--muted);font-weight:800;min-width:190px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer;user-select:none}
     .role-toggle .thumb{position:absolute;top:4px;left:4px;width:calc(50% - 6px);height:calc(100% - 8px);border-radius:999px;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);transition:transform .18s ease}
     .role-toggle[data-role="prince"] .thumb{transform:translateX(100%)}
-    .role-toggle .label{position:relative;text-align:center;z-index:1}
-    .role-toggle[data-role="princess"] .label.left,.role-toggle[data-role="prince"] .label.right{color:#0b1228}
+    .role-toggle .label{position:relative;text-align:center;z-index:1;color:var(--muted);transition:color .12s ease;font-weight:700}
+    .role-toggle .label[data-active="true"]{color:#0b1228;font-weight:900}
     .attachment-preview{border:1px solid var(--outline);border-radius:10px;padding:10px;background:#0f1329;margin-top:6px}
     .attachment-preview img{max-width:100%;border-radius:8px}
     .entry .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -101,7 +101,6 @@
       <div class="panel">
         <div class="section-title">
           <h2>Check-in schreiben</h2>
-          <button id="saveBtn" type="button">Sichern & teilen</button>
         </div>
 
         <div class="pill">
@@ -111,10 +110,11 @@
           </div>
           <div class="role-toggle" id="roleSwitch" role="switch" aria-checked="false" tabindex="0">
             <div class="thumb" aria-hidden="true"></div>
-            <div class="label left">👸 N</div>
-            <div class="label right">🤴 E</div>
+            <div class="label left" data-role-label="princess">👸 N</div>
+            <div class="label right" data-role-label="prince">🤴 E</div>
           </div>
         </div>
+        <div class="subtle" id="roleIndicator" aria-live="polite"></div>
 
         <div>
           <label>Wie fühlst du dich?</label>
@@ -167,6 +167,9 @@
             </div>
             <div class="subtle">Optionales Foto zu deinem Eintrag.</div>
           </div>
+        </div>
+        <div class="section-title" style="justify-content:flex-end">
+          <button id="saveBtn" type="button">Posten</button>
         </div>
       </div>
 
@@ -228,6 +231,11 @@
   const lastUpdate = document.getElementById('lastUpdate');
   const summaryCard = document.getElementById('summaryCard');
   const roleSwitch = document.getElementById('roleSwitch');
+  const roleIndicator = document.getElementById('roleIndicator');
+  const roleLabels = {
+    princess: roleSwitch.querySelector('[data-role-label="princess"]'),
+    prince: roleSwitch.querySelector('[data-role-label="prince"]')
+  };
   const voiceBtn = document.getElementById('voiceBtn');
   const voiceStatus = document.getElementById('voiceStatus');
   const voicePreview = document.getElementById('voicePreview');
@@ -321,14 +329,27 @@
   }
 
   function initRoleToggle(){
-    const toggleRole = () => {
-      state.currentRole = state.currentRole === 'princess' ? 'prince' : 'princess';
+    const setRole = (role) => {
+      if(role !== 'princess' && role !== 'prince') return;
+      if(state.currentRole === role){
+        updateRoleToggle();
+        return;
+      }
+      state.currentRole = role;
       persist();
       updateRoleToggle();
       renderEntries();
       renderFilters();
     };
-    roleSwitch.addEventListener('click', toggleRole);
+    const toggleRole = () => setRole(state.currentRole === 'princess' ? 'prince' : 'princess');
+    roleSwitch.addEventListener('click', (evt) => {
+      const requested = evt.target.closest('[data-role-label]')?.dataset.roleLabel;
+      if(requested){
+        setRole(requested);
+        return;
+      }
+      toggleRole();
+    });
     roleSwitch.addEventListener('keydown', (evt) => {
       if(evt.key === ' ' || evt.key === 'Enter'){
         evt.preventDefault();
@@ -342,6 +363,13 @@
     roleSwitch.dataset.role = state.currentRole;
     roleSwitch.setAttribute('aria-checked', state.currentRole === 'prince');
     roleSwitch.setAttribute('aria-label', `Aktive Rolle: ${roles[state.currentRole].label}`);
+    Object.entries(roleLabels).forEach(([key, node]) => {
+      if(!node) return;
+      node.dataset.active = key === state.currentRole;
+    });
+    if(roleIndicator){
+      roleIndicator.textContent = `${roles[state.currentRole].label} ist aktiv`;
+    }
   }
 
   function renderMoods(){
