@@ -6,7 +6,7 @@ Eine minimalistische PWA für schnelle Paar-Check-ins: Stimmung teilen, Themen a
 - Stimmungs-Check-in mit Energie-Slider und Gesprächswunsch
 - Offene Themen speichern und gefiltert anzeigen
 - Kontextbezogene Fragen (lokal generiert) zur Reflexion
-- Zusammenfassung für den Partner kopieren
+- Zusammenfassung für E kopieren
 - PWA-ready: Manifest, Service Worker, Offline-Seite und Apple-Meta-Tags
 
 ## Nutzung
