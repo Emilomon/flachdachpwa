@@ -87,11 +87,16 @@
     .tab[data-active="true"]{border-color:var(--accent);background:rgba(125,214,255,.16);color:#0b1228}
     .topics-list{display:flex;flex-direction:column;gap:12px}
     .topic-card{border:1px solid var(--outline);border-radius:16px;padding:12px;display:grid;grid-template-columns:auto 1fr;gap:12px;background:#0f1329;box-shadow:var(--shadow)}
+    .topic-card[data-read=\"true\"]{opacity:.82}
     .topic-icon{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:24px}
     .topic-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-weight:800}
     .topic-meta small{color:var(--muted);font-weight:500}
     .topic-sub{color:var(--muted);font-size:13px}
     .topic-text{margin-top:6px;font-size:15px}
+    .topic-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .topic-actions button{padding:8px 10px;font-size:13px;box-shadow:none}
+    button.danger{background:rgba(255,255,255,.05);color:#ffb3b3;border:1px solid rgba(255,255,255,.16)}
+    button.danger:active{transform:translateY(1px);box-shadow:none}
     .summary-section{display:grid;gap:12px}
     .summary-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
     .pill-select{display:flex;gap:8px;flex-wrap:wrap}
@@ -275,6 +280,7 @@
       migrated.authorName = migrated.authorName || (migrated.authorType === 'partner' ? state.partnerName : state.selfName);
       migrated.talkIntent = migrated.talkIntent || 'wenn Zeit';
       migrated.readBy = migrated.readBy || {};
+      if(typeof migrated.isRead === 'undefined') migrated.isRead = false;
       if(!migrated.moodLabel || !migrated.emoji){
         const meta = moods.find(m => m.id === migrated.mood) || moods[0];
         migrated.moodLabel = migrated.moodLabel || meta.label;
@@ -409,6 +415,7 @@
     entries.forEach(entry => {
       const card = document.createElement('div');
       card.className = 'topic-card';
+      card.dataset.read = entry.isRead ? 'true' : 'false';
 
       const icon = document.createElement('div');
       icon.className = 'topic-icon';
@@ -432,7 +439,23 @@
       text.textContent = entry.topic || 'Kein Text';
       if(!entry.topic) text.classList.add('subtle');
 
-      body.append(meta, sub, text);
+      const actions = document.createElement('div');
+      actions.className = 'topic-actions';
+      const readBtn = document.createElement('button');
+      readBtn.type = 'button';
+      readBtn.className = 'ghost';
+      readBtn.textContent = entry.isRead ? 'Als ungelesen markieren' : 'Gelesen';
+      readBtn.addEventListener('click', () => toggleRead(entry.id));
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'danger';
+      deleteBtn.textContent = 'Löschen';
+      deleteBtn.addEventListener('click', () => deleteEntry(entry.id));
+
+      actions.append(readBtn, deleteBtn);
+
+      body.append(meta, sub, text, actions);
       card.append(icon, body);
       openList.appendChild(card);
     });
@@ -500,6 +523,7 @@
       energy,
       talkIntent,
       topic,
+      isRead: false,
       createdAt
     };
 
@@ -507,6 +531,7 @@
     persist();
     hydrateForm();
     renderOpenTopics();
+    openList.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   function buildSummary(entry){
@@ -539,6 +564,20 @@
     persist();
     renderAuthorToggle();
     renderFilters();
+    renderOpenTopics();
+  }
+
+  function toggleRead(id){
+    const entry = state.entries.find(e => e.id === id);
+    if(!entry) return;
+    entry.isRead = !entry.isRead;
+    persist();
+    renderOpenTopics();
+  }
+
+  function deleteEntry(id){
+    state.entries = state.entries.filter(e => e.id !== id);
+    persist();
     renderOpenTopics();
   }
 })();
