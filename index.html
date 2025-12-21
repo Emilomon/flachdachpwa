@@ -110,7 +110,6 @@
           <p>Schreibt ein kurzes Update, haltet offene Themen fest und behaltet gemeinsam den Überblick.</p>
         </div>
         <div class="badges">
-          <div class="badge">PWA · offlinefähig</div>
           <div class="badge" id="lastUpdate">Keine Einträge</div>
         </div>
       </header>
@@ -125,18 +124,7 @@
           </div>
           <button id="saveBtn" type="button">Sichern & teilen</button>
         </div>
-
-        <div class="form-grid">
-          <div>
-            <label for="selfName">Dein Name</label>
-            <input id="selfName" type="text" placeholder="Ich" autocomplete="name">
-          </div>
-          <div>
-            <label for="partnerName">Name deines Partners/deiner Partnerin</label>
-            <input id="partnerName" type="text" placeholder="z. B. Ben" autocomplete="additional-name">
-          </div>
-        </div>
-
+        
         <div>
           <label>Wer schreibt?</label>
           <div class="pill-select" id="authorToggle"></div>
@@ -171,14 +159,6 @@
           <textarea id="topic" placeholder="Was möchtest du später teilen oder besprechen?"></textarea>
           <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt, bis ihr ihn abhakt oder 14 Tage vorbei sind.</div>
         </div>
-
-        <div class="section-title">
-          <h2>Kurze Fragen</h2>
-          <button id="refreshQuestions" type="button" class="ghost">Fragen aktualisieren</button>
-        </div>
-        <div class="subtle">Impulse passend zu deiner aktuellen Stimmung.</div>
-        <div class="questions" id="questionBox"></div>
-      </div>
 
       <div class="panel">
         <div class="section-bar">
@@ -215,43 +195,7 @@
     { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
     { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' }
   ];
-  const questionPool = {
-    ruhig: [
-      'Was tut dir heute gut?',
-      'Womit können wir den ruhigen Flow nutzen?',
-      'Gibt es etwas, das du wertschätzt?'
-    ],
-    gestresst: [
-      'Was setzt dich gerade unter Strom?',
-      'Was wäre ein kleiner Schritt zur Entlastung?',
-      'Wie kann ich heute unterstützen?'
-    ],
-    muede: [
-      'Was raubt dir Energie?',
-      'Kannst du dir eine kleine Pause nehmen?',
-      'Was würde dir jetzt gut tun?'
-    ],
-    freudig: [
-      'Was macht dich heute froh?',
-      'Worauf freust du dich als Nächstes?',
-      'Wie können wir den Moment teilen?'
-    ],
-    genervt: [
-      'Was nervt dich konkret?',
-      'Brauchst du nur Gehör oder eine Lösung?',
-      'Was würde es leichter machen?'
-    ],
-    dankbar: [
-      'Wofür bist du gerade dankbar?',
-      'Gibt es etwas, das du hervorheben möchtest?',
-      'Wie können wir mehr davon schaffen?'
-    ],
-    fallback: [
-      'Welche Überschrift hätte dein Tag?',
-      'Was darf dein Partner jetzt über dich wissen?',
-      'Wie kann man dir heute etwas Gutes tun?'
-    ]
-  };
+
 
   const moodList = document.getElementById('moodList');
   const lastUpdate = document.getElementById('lastUpdate');
@@ -269,8 +213,8 @@
     archived: [],
     lastMood: 'ruhig',
     currentAuthor: 'self',
-    selfName: 'Ich',
-    partnerName: 'Partner',
+    selfName: 'E',
+    partnerName: 'N',
     filter: 'all',
     questions: []
   };
