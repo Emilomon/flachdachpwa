@@ -34,28 +34,28 @@
     .badges{display:flex;flex-wrap:wrap;gap:8px}
     .badge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-variant-numeric:tabular-nums;color:var(--ink);display:flex;align-items:center;gap:6px}
     .layout{margin-top:14px;display:flex;flex-direction:column;gap:14px}
-    .panel{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+    .panel{background:var(--card);border:1px solid var(--outline);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
     label{font-weight:700;color:var(--ink);display:block;margin-bottom:4px}
     textarea, input[type="text"], input[type="password"], input[type="file"], select{width:100%;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:10px;font-size:16px;line-height:1.4;font-family:inherit;outline:none;transition:border .15s ease,box-shadow .15s ease}
     textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus, input[type="file"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.14)}
     textarea{min-height:120px;resize:vertical}
     .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;align-items:end}
     .subtle{color:var(--muted);font-size:13px}
-    .moods{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
-    .mood{border:1px solid var(--outline);border-radius:12px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#0f1329;transition:border .15s ease,transform .1s ease}
+    .moods{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+    .mood{border:1px solid var(--outline);border-radius:14px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#0f1329;transition:border .15s ease,transform .1s ease}
     .mood input{display:none}
     .mood strong{font-size:16px}
     .mood small{color:var(--muted)}
-    .mood[data-active="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.12);transform:translateY(-1px)}
+    .mood[data-active="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,214,255,.12);transform:translateY(-1px);background:rgba(125,214,255,.05)}
     button{appearance:none;-webkit-appearance:none;background:linear-gradient(120deg,#7dd6ff,#b3ffdc);border:none;color:#0b1228;font-weight:800;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;box-shadow:0 10px 30px rgba(125,214,255,.26);transition:transform .1s ease,box-shadow .1s ease}
     button:active{transform:translateY(1px);box-shadow:0 6px 18px rgba(125,214,255,.26)}
     button[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
     .ghost{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--outline);box-shadow:none}
     .switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
-    .pill{padding:10px 12px;border-radius:12px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px}
-    .entry{border:1px solid var(--outline);border-radius:14px;padding:12px;background:#0f1329;display:grid;grid-template-columns:auto 1fr;gap:10px}
-    .entry .tag{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;display:inline-flex;align-items:center;gap:6px}
+    .pill{padding:12px 14px;border-radius:14px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .list{display:flex;flex-direction:column;gap:12px;max-height:520px;overflow:auto;padding-right:6px}
+    .entry{border:1px solid var(--outline);border-radius:16px;padding:12px;background:#0f1329;display:grid;grid-template-columns:auto 1fr;gap:10px}
+    .entry .tag{padding:6px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;display:inline-flex;align-items:center;gap:6px}
     .entry small{color:var(--muted)}
     .questions{display:grid;gap:8px}
     .question{padding:10px 12px;border-radius:10px;border:1px dashed var(--outline);background:rgba(255,255,255,.04)}
@@ -80,6 +80,23 @@
     .forum-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .attachment-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .read-toggle{margin-top:6px}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .section-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .tab-group{display:flex;gap:10px;flex-wrap:wrap}
+    .tab{padding:10px 14px;border-radius:12px;border:1px solid var(--outline);background:rgba(255,255,255,.05);color:var(--ink);font-weight:800;cursor:pointer;box-shadow:none}
+    .tab[data-active="true"]{border-color:var(--accent);background:rgba(125,214,255,.16);color:#0b1228}
+    .topics-list{display:flex;flex-direction:column;gap:12px}
+    .topic-card{border:1px solid var(--outline);border-radius:16px;padding:12px;display:grid;grid-template-columns:auto 1fr;gap:12px;background:#0f1329;box-shadow:var(--shadow)}
+    .topic-icon{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:24px}
+    .topic-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-weight:800}
+    .topic-meta small{color:var(--muted);font-weight:500}
+    .topic-sub{color:var(--muted);font-size:13px}
+    .topic-text{margin-top:6px;font-size:15px}
+    .summary-section{display:grid;gap:12px}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .pill-select{display:flex;gap:8px;flex-wrap:wrap}
+    .pill-select button{padding:10px 12px;border-radius:12px;border:1px solid var(--outline);background:rgba(255,255,255,.05);color:var(--ink);box-shadow:none}
+    .pill-select button[data-active="true"]{border-color:var(--accent);background:rgba(125,214,255,.12);color:#0b1228}
     @media (max-width:900px){body{padding:8px}.layout{flex-direction:column}.list{max-height:none}.forum-tools{grid-template-columns:1fr}.role-toggle{min-width:0}}
   </style>
 </head>
@@ -90,7 +107,7 @@
         <div>
           <div class="eyebrow">Zweisam, auch wenn wenig Zeit ist</div>
           <h1>Unser Check-in</h1>
-          <p>Teilt eure Stimmung, sprecht per Text oder Sprachnachricht, hängt Fotos an und haltet den Überblick wie in einem kleinen Forum.</p>
+          <p>Schreibt ein kurzes Update, haltet offene Themen fest und behaltet gemeinsam den Überblick.</p>
         </div>
         <div class="badges">
           <div class="badge">PWA · offlinefähig</div>
@@ -101,22 +118,29 @@
 
     <div class="layout" aria-live="polite">
       <div class="panel">
-        <div class="section-title">
-          <h2>Check-in schreiben</h2>
+        <div class="section-bar">
+          <div>
+            <div class="eyebrow" style="margin:0">Check-in schreiben</div>
+            <h2 style="margin:0">Wie geht es dir gerade?</h2>
+          </div>
+          <button id="saveBtn" type="button">Sichern & teilen</button>
         </div>
 
-        <div class="pill">
+        <div class="form-grid">
           <div>
-            <strong>Wer bist du?</strong>
-            <div class="subtle">Schalte zwischen euch hin und her.</div>
+            <label for="selfName">Dein Name</label>
+            <input id="selfName" type="text" placeholder="Ich" autocomplete="name">
           </div>
-          <div class="role-toggle" id="roleSwitch" role="switch" aria-checked="false" tabindex="0">
-            <div class="thumb" aria-hidden="true"></div>
-            <div class="label left" data-role-label="princess">👸 N</div>
-            <div class="label right" data-role-label="prince">🤴 E</div>
+          <div>
+            <label for="partnerName">Name deines Partners/deiner Partnerin</label>
+            <input id="partnerName" type="text" placeholder="z. B. Ben" autocomplete="additional-name">
           </div>
         </div>
-        <div class="subtle" id="roleIndicator" aria-live="polite"></div>
+
+        <div>
+          <label>Wer schreibt?</label>
+          <div class="pill-select" id="authorToggle"></div>
+        </div>
 
         <div>
           <label>Wie fühlst du dich?</label>
@@ -135,85 +159,92 @@
               <strong>Gesprächswunsch</strong>
               <div class="subtle">Soll der andere reagieren?</div>
             </div>
-            <select id="talkIntent" style="width:140px;border-radius:10px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:8px">
+            <select id="talkIntent" style="width:160px;border-radius:10px;border:1px solid var(--outline);background:#0f1329;color:var(--ink);padding:8px">
               <option value="wenn Zeit">Wenn Zeit ist</option>
-              <option value="bitte melden">Bitte bald melden</option>
+              <option value="bitte melden">Bitte melden</option>
               <option value="nur Info">Nur Info</option>
             </select>
           </div>
         </div>
         <div>
           <label for="topic">Thema festhalten</label>
-          <textarea id="topic" placeholder="Was möchtest du teilen oder besprechen?"></textarea>
-          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt als Forumspost, bis ihr ihn abhakt oder die 14 Tage vorbei sind.</div>
+          <textarea id="topic" placeholder="Was möchtest du später teilen oder besprechen?"></textarea>
+          <div class="subtle">Kurz & einfach reicht. Der Eintrag bleibt, bis ihr ihn abhakt oder 14 Tage vorbei sind.</div>
         </div>
+
         <div class="section-title">
-          <h2>Mood Check-up</h2>
+          <h2>Kurze Fragen</h2>
           <button id="refreshQuestions" type="button" class="ghost">Fragen aktualisieren</button>
         </div>
-        <div class="subtle">Drei kurze Impulse passend zu deiner aktuellen Stimmung.</div>
+        <div class="subtle">Impulse passend zu deiner aktuellen Stimmung.</div>
         <div class="questions" id="questionBox"></div>
+      </div>
 
-        <div class="row">
-          <div class="pill" style="flex-direction:column;align-items:flex-start">
-            <div class="section-title" style="width:100%">
-              <h3 style="margin:0;font-size:16px">Sprachnachricht</h3>
-              <button id="voiceBtn" type="button" class="ghost">Aufnahme starten</button>
-            </div>
-            <div class="subtle" id="voiceStatus">Bereit zum Aufnehmen.</div>
-            <div class="attachment-preview" id="voicePreview" hidden>
-              <audio controls style="width:100%"></audio>
-              <button id="clearVoice" type="button" class="ghost" style="margin-top:6px">Sprachnachricht entfernen</button>
-            </div>
+      <div class="panel">
+        <div class="section-bar">
+          <div>
+            <div class="eyebrow" style="margin:0">Offene Themen</div>
+            <h2 style="margin:0">Was steht an?</h2>
           </div>
-          <div class="pill" style="flex-direction:column;align-items:flex-start">
-            <h3 style="margin:0;font-size:16px">Foto anhängen</h3>
-            <input id="photoInput" type="file" accept="image/*" />
-            <div class="attachment-preview" id="photoPreview" hidden>
-              <img alt="Angehängtes Foto" />
-              <button id="clearPhoto" type="button" class="ghost" style="margin-top:6px">Foto entfernen</button>
-            </div>
-            <div class="subtle">Optionales Foto zu deinem Eintrag.</div>
-          </div>
-        </div>
-        <div class="section-title" style="justify-content:flex-end">
-          <button id="saveBtn" type="button">Posten</button>
+          <div class="tab-group" id="filterTabs"></div>
         </div>
 
-        <div class="section-title">
-          <h2>Deine Check-ins</h2>
-          <div class="chips" id="filters"></div>
+        <div class="topics-list" id="openList"></div>
+
+        <div class="summary-section">
+          <div class="summary-row">
+            <h3 style="margin:0;font-size:18px">Zusammenfassung für deinen Partner</h3>
+            <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
+          </div>
+          <div class="summary-card" id="summaryText"></div>
+          <div class="summary-card" id="quickInfo"></div>
         </div>
-        <div class="subtle">Nach dem Posten erscheint dein Beitrag direkt hier.</div>
-        <div class="list" id="entryList"></div>
       </div>
     </div>
   </div>
 
 <script>
 (function(){
-  const STORAGE_KEY = 'tandem-checkins-v2';
+  const STORAGE_KEY = 'tandem-checkins-v3';
   const TTL_MS = 14 * 24 * 60 * 60 * 1000;
   const moods = [
-    { id:'gut', label:'Gut', emoji:'😊', tone:'es läuft' },
-    { id:'okay', label:'Okay', emoji:'🙂', tone:'im Gleichgewicht' },
-    { id:'zäh', label:'Zäh', emoji:'😕', tone:'braucht Energie' }
+    { id:'ruhig', label:'Ruhig', emoji:'🌿', tone:'ausgeglichen' },
+    { id:'gestresst', label:'Gestresst', emoji:'⚡️', tone:'unter Strom' },
+    { id:'muede', label:'Müde', emoji:'🥱', tone:'erschöpft' },
+    { id:'freudig', label:'Freudig', emoji:'✨', tone:'positiv' },
+    { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
+    { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' }
   ];
   const questionPool = {
-    gut: [
-      'Was war der beste Moment heute?',
-      'Womit kann ich deinen Flow unterstützen?',
-      'Was möchtest du gern teilen?'
+    ruhig: [
+      'Was tut dir heute gut?',
+      'Womit können wir den ruhigen Flow nutzen?',
+      'Gibt es etwas, das du wertschätzt?'
     ],
-    okay: [
-      'Was hilft dir, so ausgeglichen zu bleiben?',
-      'Gibt es etwas Kleines, das wir heute zusammen machen wollen?',
-      'Worauf freust du dich als Nächstes?'
+    gestresst: [
+      'Was setzt dich gerade unter Strom?',
+      'Was wäre ein kleiner Schritt zur Entlastung?',
+      'Wie kann ich heute unterstützen?'
     ],
-    zäh: [
-      'Was zieht dir heute Kraft?',
-      'Wie kann ich dich kurz entlasten?',
-      'Was wäre ein kleiner Schritt, der gerade hilft?'
+    muede: [
+      'Was raubt dir Energie?',
+      'Kannst du dir eine kleine Pause nehmen?',
+      'Was würde dir jetzt gut tun?'
+    ],
+    freudig: [
+      'Was macht dich heute froh?',
+      'Worauf freust du dich als Nächstes?',
+      'Wie können wir den Moment teilen?'
+    ],
+    genervt: [
+      'Was nervt dich konkret?',
+      'Brauchst du nur Gehör oder eine Lösung?',
+      'Was würde es leichter machen?'
+    ],
+    dankbar: [
+      'Wofür bist du gerade dankbar?',
+      'Gibt es etwas, das du hervorheben möchtest?',
+      'Wie können wir mehr davon schaffen?'
     ],
     fallback: [
       'Welche Überschrift hätte dein Tag?',
@@ -221,62 +252,44 @@
       'Wie kann man dir heute etwas Gutes tun?'
     ]
   };
-  const roles = {
-    princess: { label:'👸 N', color:'accent' },
-    prince: { label:'🤴 E', color:'accent2' }
-  };
 
   const moodList = document.getElementById('moodList');
-  const entryList = document.getElementById('entryList');
-  const filters = document.getElementById('filters');
   const lastUpdate = document.getElementById('lastUpdate');
-  const roleSwitch = document.getElementById('roleSwitch');
-  const roleIndicator = document.getElementById('roleIndicator');
   const questionBox = document.getElementById('questionBox');
-  const roleLabels = {
-    princess: roleSwitch.querySelector('[data-role-label="princess"]'),
-    prince: roleSwitch.querySelector('[data-role-label="prince"]')
-  };
-  const voiceBtn = document.getElementById('voiceBtn');
-  const voiceStatus = document.getElementById('voiceStatus');
-  const voicePreview = document.getElementById('voicePreview');
-  const voiceAudio = voicePreview.querySelector('audio');
-  voiceAudio.setAttribute('playsinline','');
-  const clearVoiceBtn = document.getElementById('clearVoice');
-  const photoInput = document.getElementById('photoInput');
-  const photoPreview = document.getElementById('photoPreview');
-  const clearPhotoBtn = document.getElementById('clearPhoto');
-  const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
+  const filterTabs = document.getElementById('filterTabs');
+  const openList = document.getElementById('openList');
+  const summaryText = document.getElementById('summaryText');
+  const quickInfo = document.getElementById('quickInfo');
+  const authorToggle = document.getElementById('authorToggle');
+  const selfNameInput = document.getElementById('selfName');
+  const partnerNameInput = document.getElementById('partnerName');
 
-  const defaultState = { entries: [], archived: [], lastMood: 'okay', currentRole: 'princess', filter: null, questions: [] };
+  const defaultState = {
+    entries: [],
+    archived: [],
+    lastMood: 'ruhig',
+    currentAuthor: 'self',
+    selfName: 'Ich',
+    partnerName: 'Partner',
+    filter: 'all',
+    questions: []
+  };
+
   let state = load();
   normalizeState();
   hydrateForm();
-  initRoleToggle();
+  renderAuthorToggle();
   renderMoods();
   renderFilters();
-  renderEntries();
+  renderOpenTopics();
   renderQuestions();
   if(!state.questions.length) refreshQuestions();
 
   document.getElementById('saveBtn').addEventListener('click', saveEntry);
-  if(!supportsMediaRecorder){
-    voiceBtn.disabled = true;
-    voiceBtn.textContent = 'Aufnahme nicht unterstützt';
-    voiceStatus.textContent = 'Auf diesem Gerät sind Sprachnachrichten nicht möglich.';
-  } else {
-    voiceBtn.addEventListener('click', toggleRecording);
-  }
-  clearVoiceBtn.addEventListener('click', ()=>{ currentVoice = null; renderVoicePreview(); });
-  photoInput.addEventListener('change', handlePhotoSelect);
-  clearPhotoBtn.addEventListener('click', ()=>{ currentPhoto = null; renderPhotoPreview(); });
-
-  let mediaRecorder = null;
-  let chunks = [];
-  let currentVoice = null;
-  let currentPhoto = null;
-  let activeStream = null;
-  const preferredMimeType = getPreferredMimeType();
+  document.getElementById('refreshQuestions').addEventListener('click', refreshQuestions);
+  document.getElementById('copySummary').addEventListener('click', copySummary);
+  selfNameInput.addEventListener('input', () => updateNames('self', selfNameInput.value));
+  partnerNameInput.addEventListener('input', () => updateNames('partner', partnerNameInput.value));
 
   function load(){
     try{
@@ -296,21 +309,40 @@
     if(!Array.isArray(state.entries)) state.entries = [];
     if(!Array.isArray(state.archived)) state.archived = [];
     if(!Array.isArray(state.questions)) state.questions = [];
-    if(!state.currentRole) state.currentRole = 'princess';
+    if(!state.selfName) state.selfName = 'Ich';
+    if(!state.partnerName) state.partnerName = 'Partner';
+    if(!state.currentAuthor) state.currentAuthor = 'self';
+    if(!state.filter) state.filter = 'all';
+
     const cutoff = Date.now() - TTL_MS;
-    const archivedMap = new Map(state.archived.map(a => [a.id, a]));
     const fresh = [];
+    const archivedMap = new Map(state.archived.map(a => [a.id, a]));
+
     state.entries.forEach(entry => {
-      if(!entry.readBy) entry.readBy = { princess: false, prince: false };
-      if(entry.createdAt < cutoff){
-        entry.archivedAt = entry.archivedAt || Date.now();
-        if(!archivedMap.has(entry.id)){
-          archivedMap.set(entry.id, entry);
+      const migrated = { ...entry };
+      if(!migrated.authorType){
+        if(entry.authorRole === 'prince') migrated.authorType = 'partner';
+        else migrated.authorType = 'self';
+      }
+      migrated.authorName = migrated.authorName || (migrated.authorType === 'partner' ? state.partnerName : state.selfName);
+      migrated.talkIntent = migrated.talkIntent || 'wenn Zeit';
+      migrated.readBy = migrated.readBy || {};
+      if(!migrated.moodLabel || !migrated.emoji){
+        const meta = moods.find(m => m.id === migrated.mood) || moods[0];
+        migrated.moodLabel = migrated.moodLabel || meta.label;
+        migrated.emoji = migrated.emoji || meta.emoji;
+      }
+
+      if(migrated.createdAt < cutoff){
+        migrated.archivedAt = migrated.archivedAt || Date.now();
+        if(!archivedMap.has(migrated.id)){
+          archivedMap.set(migrated.id, migrated);
         }
       } else {
-        fresh.push(entry);
+        fresh.push(migrated);
       }
     });
+
     state.entries = fresh;
     state.archived = Array.from(archivedMap.values());
     persist();
@@ -320,54 +352,28 @@
     document.getElementById('energy').value = 5;
     document.getElementById('topic').value = '';
     document.getElementById('talkIntent').value = 'wenn Zeit';
-    currentVoice = null;
-    currentPhoto = null;
-    renderVoicePreview();
-    renderPhotoPreview();
+    selfNameInput.value = state.selfName;
+    partnerNameInput.value = state.partnerName;
   }
 
-  function initRoleToggle(){
-    const setRole = (role) => {
-      if(role !== 'princess' && role !== 'prince') return;
-      if(state.currentRole === role){
-        updateRoleToggle();
-        return;
-      }
-      state.currentRole = role;
-      persist();
-      updateRoleToggle();
-      renderEntries();
-      renderFilters();
-    };
-    const toggleRole = () => setRole(state.currentRole === 'princess' ? 'prince' : 'princess');
-    roleSwitch.addEventListener('click', (evt) => {
-      const requested = evt.target.closest('[data-role-label]')?.dataset.roleLabel;
-      if(requested){
-        setRole(requested);
-        return;
-      }
-      toggleRole();
+  function renderAuthorToggle(){
+    authorToggle.innerHTML = '';
+    const items = [
+      { id:'self', label: state.selfName || 'Ich' },
+      { id:'partner', label: state.partnerName || 'Partner' }
+    ];
+    items.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = item.label || item.id;
+      btn.dataset.active = state.currentAuthor === item.id;
+      btn.addEventListener('click', () => {
+        state.currentAuthor = item.id;
+        persist();
+        renderAuthorToggle();
+      });
+      authorToggle.appendChild(btn);
     });
-    roleSwitch.addEventListener('keydown', (evt) => {
-      if(evt.key === ' ' || evt.key === 'Enter'){
-        evt.preventDefault();
-        toggleRole();
-      }
-    });
-    updateRoleToggle();
-  }
-
-  function updateRoleToggle(){
-    roleSwitch.dataset.role = state.currentRole;
-    roleSwitch.setAttribute('aria-checked', state.currentRole === 'prince');
-    roleSwitch.setAttribute('aria-label', `Aktive Rolle: ${roles[state.currentRole].label}`);
-    Object.entries(roleLabels).forEach(([key, node]) => {
-      if(!node) return;
-      node.dataset.active = key === state.currentRole;
-    });
-    if(roleIndicator){
-      roleIndicator.textContent = `${roles[state.currentRole].label} ist aktiv`;
-    }
   }
 
   function renderMoods(){
@@ -406,122 +412,87 @@
   }
 
   function renderFilters(){
-    filters.innerHTML = '';
-    const chipData = [
-      { value: 'all', label: 'Alle Posts' },
-      { value: 'princess', label: roles.princess.label },
-      { value: 'prince', label: roles.prince.label },
-      { value: 'unread', label: 'Ungelesen' }
+    filterTabs.innerHTML = '';
+    const tabs = [
+      { value:'all', label:'Alle Einträge' },
+      { value:'self', label: state.selfName || 'Ich' },
+      { value:'partner', label: state.partnerName || 'Partner' }
     ];
-    chipData.forEach(ch => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'chip';
-      chip.textContent = ch.label;
-      chip.dataset.value = ch.value;
-      chip.dataset.active = state.filter ? state.filter === ch.value : ch.value === 'all';
-      chip.addEventListener('click', () => {
-        state.filter = ch.value === 'all' ? null : ch.value;
+    tabs.forEach(tab => {
+      const node = document.createElement('button');
+      node.type = 'button';
+      node.className = 'tab';
+      node.textContent = tab.label;
+      node.dataset.active = state.filter === tab.value;
+      node.addEventListener('click', () => {
+        state.filter = tab.value;
         persist();
         renderFilters();
-        renderEntries();
+        renderOpenTopics();
       });
-      filters.appendChild(chip);
+      filterTabs.appendChild(node);
     });
   }
 
-  function renderEntries(){
+  function renderOpenTopics(){
     normalizeState();
-    entryList.innerHTML = '';
-    const list = state.entries
+    openList.innerHTML = '';
+    const entries = state.entries
       .map(enrichEntry)
       .filter(e => {
-        if(!state.filter || state.filter === 'all') return true;
-        if(state.filter === 'unread') return !e.readBy[state.currentRole];
-        return e.authorRole === state.filter;
+        if(state.filter === 'all') return true;
+        return e.authorType === state.filter;
       })
-      .sort((a,b)=>a.createdAt-b.createdAt);
+      .sort((a,b)=>b.createdAt-a.createdAt);
 
-    if(list.length === 0){
+    if(entries.length === 0){
       const empty = document.createElement('div');
       empty.className = 'subtle';
       empty.textContent = 'Noch keine Einträge. Schreib den ersten Check-in!';
-      entryList.appendChild(empty);
+      openList.appendChild(empty);
       lastUpdate.textContent = 'Keine Einträge';
+      summaryText.textContent = 'Noch keine Daten für die Zusammenfassung.';
+      quickInfo.textContent = 'Hier landet dein Kurzupdate für deinen Partner.';
       return;
     }
 
     const formatter = new Intl.DateTimeFormat('de-DE',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});
 
-    list.forEach(entry => {
-      const node = document.createElement('div');
-      node.className = 'entry';
+    entries.forEach(entry => {
+      const card = document.createElement('div');
+      card.className = 'topic-card';
 
-      const tag = document.createElement('div');
-      tag.className = 'tag';
-      tag.textContent = `${entry.emoji} ${entry.moodLabel}`;
+      const icon = document.createElement('div');
+      icon.className = 'topic-icon';
+      icon.textContent = entry.emoji;
 
       const body = document.createElement('div');
-      const headerLine = document.createElement('div');
-      headerLine.className = 'meta';
+      const meta = document.createElement('div');
+      meta.className = 'topic-meta';
       const author = document.createElement('strong');
-      author.textContent = entry.authorLabel;
-      const time = document.createElement('small');
-      time.textContent = formatter.format(entry.createdAt);
-      const energy = document.createElement('small');
-      energy.textContent = `Energie: ${entry.energy}/10`;
-      const intent = document.createElement('small');
-      intent.textContent = `Wunsch: ${entry.talkIntent}`;
-      const readBadge = document.createElement('span');
-      readBadge.className = 'badge-small';
-      readBadge.textContent = entry.readBy[state.currentRole] ? 'Für dich gelesen' : 'Für dich ungelesen';
-      headerLine.append(author, document.createTextNode(' · '), time, energy, intent, readBadge);
+      author.textContent = entry.authorName || 'Unbekannt';
+      const dot = document.createElement('small');
+      dot.textContent = formatter.format(entry.createdAt);
+      meta.append(author, document.createTextNode(' · '), dot);
 
-      const topicLine = document.createElement('div');
-      topicLine.style.marginTop = '6px';
-      if(entry.topic){
-        topicLine.textContent = entry.topic;
-      } else {
-        const empty = document.createElement('span');
-        empty.className = 'subtle';
-        empty.textContent = 'Kein Text';
-        topicLine.append(empty);
-      }
+      const sub = document.createElement('div');
+      sub.className = 'topic-sub';
+      sub.textContent = `Energie: ${entry.energy}/10 · Wunsch: ${entry.talkIntent}`;
 
-      if(entry.voiceNote){
-        const voiceWrap = document.createElement('div');
-        voiceWrap.className = 'attachment-preview';
-        const audio = document.createElement('audio');
-        audio.controls = true;
-        audio.src = entry.voiceNote.data;
-        voiceWrap.append(document.createTextNode('Sprachnachricht'), audio);
-        body.appendChild(voiceWrap);
-      }
+      const text = document.createElement('div');
+      text.className = 'topic-text';
+      text.textContent = entry.topic || 'Kein Text';
+      if(!entry.topic) text.classList.add('subtle');
 
-      if(entry.photo){
-        const photoWrap = document.createElement('div');
-        photoWrap.className = 'attachment-preview';
-        const img = document.createElement('img');
-        img.src = entry.photo.data;
-        img.alt = 'Angehängtes Foto';
-        photoWrap.append(document.createTextNode('Foto'), img);
-        body.appendChild(photoWrap);
-      }
-
-      const readBtn = document.createElement('button');
-      readBtn.type = 'button';
-      readBtn.className = 'ghost read-toggle';
-      const isRead = entry.readBy[state.currentRole];
-      readBtn.textContent = isRead ? 'Als ungelesen markieren' : 'Als gelesen markieren';
-      readBtn.addEventListener('click', () => toggleRead(entry.id, !isRead));
-
-      body.append(headerLine, topicLine, readBtn);
-      node.append(tag, body);
-      entryList.appendChild(node);
+      body.append(meta, sub, text);
+      card.append(icon, body);
+      openList.appendChild(card);
     });
 
-    const latest = list[list.length-1];
+    const latest = entries[0];
     lastUpdate.textContent = 'Letzter Eintrag: ' + formatter.format(latest.createdAt);
+    summaryText.textContent = buildSummary(latest);
+    quickInfo.textContent = buildQuickInfo(latest);
   }
 
   function renderQuestions(){
@@ -551,146 +522,75 @@
   }
 
   function enrichEntry(entry){
+    const meta = moods.find(m => m.id === entry.mood) || moods[0];
     return {
-      readBy: { princess:false, prince:false, ...(entry.readBy || {}) },
       ...entry,
-      authorLabel: roles[entry.authorRole]?.label || entry.authorLabel || 'Unbekannt'
+      authorType: entry.authorType || 'self',
+      authorName: entry.authorName || (entry.authorType === 'partner' ? state.partnerName : state.selfName),
+      moodLabel: entry.moodLabel || meta.label,
+      emoji: entry.emoji || meta.emoji
     };
   }
 
   function saveEntry(){
-    const mood = state.lastMood || 'okay';
+    const mood = state.lastMood || 'ruhig';
     const moodMeta = moods.find(m => m.id === mood) || moods[0];
     const energy = Number(document.getElementById('energy').value) || 5;
     const topic = document.getElementById('topic').value.trim();
     const talkIntent = document.getElementById('talkIntent').value;
     const createdAt = Date.now();
+    const authorType = state.currentAuthor || 'self';
 
     const entry = {
       id: crypto.randomUUID ? crypto.randomUUID() : `${createdAt}-${Math.random()}`,
-      authorRole: state.currentRole,
-      authorLabel: roles[state.currentRole].label,
+      authorType,
+      authorName: authorType === 'partner' ? (state.partnerName || 'Partner') : (state.selfName || 'Ich'),
       mood,
       moodLabel: moodMeta.label,
       emoji: moodMeta.emoji,
       energy,
       talkIntent,
       topic,
-      createdAt,
-      voiceNote: currentVoice,
-      photo: currentPhoto,
-      readBy: { princess: state.currentRole === 'princess', prince: state.currentRole === 'prince' }
+      createdAt
     };
 
     state.entries.push(entry);
-    state.filter = null;
     persist();
     hydrateForm();
-    renderEntries();
-    renderFilters();
+    renderOpenTopics();
   }
 
-  function toggleRead(id, value){
-    state.entries = state.entries.map(entry => {
-      if(entry.id !== id) return entry;
-      const updated = { ...entry, readBy: { princess:false, prince:false, ...(entry.readBy||{}) } };
-      updated.readBy[state.currentRole] = value;
-      return updated;
-    });
-    persist();
-    renderEntries();
+  function buildSummary(entry){
+    if(!entry) return 'Noch keine Daten für die Zusammenfassung.';
+    const note = entry.topic ? entry.topic : 'Keine extra Notiz.';
+    return `${entry.authorName} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie). ${note} Wunsch: ${entry.talkIntent}.`;
   }
 
-  async function handlePhotoSelect(evt){
-    const file = evt.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      currentPhoto = { data: reader.result, name: file.name, type: file.type };
-      renderPhotoPreview();
-    };
-    reader.readAsDataURL(file);
+  function buildQuickInfo(entry){
+    if(!entry) return 'Hier landet dein Kurzupdate für deinen Partner.';
+    const note = entry.topic ? entry.topic : 'Keine extra Notiz.';
+    return `${entry.authorName} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie). ${note} Wunsch: ${entry.talkIntent}.`;
   }
 
-  function renderPhotoPreview(){
-    if(currentPhoto){
-      photoPreview.querySelector('img').src = currentPhoto.data;
-      photoPreview.hidden = false;
-    } else {
-      photoPreview.hidden = true;
-      photoInput.value = '';
-    }
-  }
-
-  function renderVoicePreview(){
-    if(currentVoice){
-      voiceAudio.src = currentVoice.data;
-      voicePreview.hidden = false;
-      voiceStatus.textContent = 'Sprachnachricht bereit.';
-      voiceBtn.textContent = 'Neu aufnehmen';
-    } else {
-      voicePreview.hidden = true;
-      voiceStatus.textContent = 'Bereit zum Aufnehmen.';
-      voiceBtn.textContent = 'Aufnahme starten';
-    }
-  }
-
-  function getPreferredMimeType(){
-    if(!supportsMediaRecorder || typeof MediaRecorder.isTypeSupported !== 'function') return null;
-    const candidates = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/aac'];
-    return candidates.find(type => MediaRecorder.isTypeSupported(type)) || null;
-  }
-
-  function stopStream(){
-    if(activeStream){
-      activeStream.getTracks().forEach(t => t.stop());
-      activeStream = null;
-    }
-  }
-
-  async function toggleRecording(){
-    if(!supportsMediaRecorder){
-      voiceStatus.textContent = 'Auf diesem Gerät werden Sprachnachrichten nicht unterstützt.';
-      return;
-    }
-    if(mediaRecorder && mediaRecorder.state === 'recording'){
-      mediaRecorder.stop();
-      voiceBtn.textContent = 'Verarbeite...';
-      return;
-    }
+  async function copySummary(){
+    const text = summaryText.textContent || '';
     try{
-      activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      chunks = [];
-      mediaRecorder = new MediaRecorder(activeStream, preferredMimeType ? { mimeType: preferredMimeType } : undefined);
-      mediaRecorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
-      mediaRecorder.onerror = () => {
-        voiceStatus.textContent = 'Aufnahme nicht möglich. Bitte erneut versuchen.';
-        stopStream();
-      };
-      mediaRecorder.onstop = async () => {
-        const chosenType = preferredMimeType || (chunks[0]?.type) || 'audio/webm';
-        const blob = new Blob(chunks, { type: chosenType });
-        const data = await blobToBase64(blob);
-        currentVoice = { data, type: blob.type, createdAt: Date.now() };
-        renderVoicePreview();
-        stopStream();
-      };
-      mediaRecorder.start();
-      voiceStatus.textContent = 'Aufnahme läuft ...';
-      voiceBtn.textContent = 'Aufnahme stoppen';
-    } catch (e){
-      voiceStatus.textContent = 'Aufnahme nicht möglich. Bitte Mikrofon erlauben.';
-      stopStream();
+      await navigator.clipboard.writeText(text);
+      summaryText.textContent = text + ' (kopiert)';
+      setTimeout(()=>{ summaryText.textContent = text; }, 1500);
+    }catch(e){
+      summaryText.textContent = 'Konnte nicht kopieren.';
     }
   }
 
-  function blobToBase64(blob){
-    return new Promise((resolve,reject)=>{
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  function updateNames(type, value){
+    const cleaned = value.trim() || (type === 'partner' ? 'Partner' : 'Ich');
+    if(type === 'self') state.selfName = cleaned;
+    if(type === 'partner') state.partnerName = cleaned;
+    persist();
+    renderAuthorToggle();
+    renderFilters();
+    renderOpenTopics();
   }
 })();
 </script>
