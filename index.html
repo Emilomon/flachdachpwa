@@ -173,7 +173,7 @@
 
         <div class="summary-section">
           <div class="summary-row">
-            <h3 style="margin:0;font-size:18px">Zusammenfassung für deinen Partner</h3>
+            <h3 style="margin:0;font-size:18px">Zusammenfassung für E</h3>
             <button id="copySummary" type="button" class="ghost">In Zwischenablage kopieren</button>
           </div>
           <div class="summary-card" id="summaryText"></div>
@@ -200,6 +200,7 @@
   const moodList = document.getElementById('moodList');
   const lastUpdate = document.getElementById('lastUpdate');
   const questionBox = document.getElementById('questionBox');
+  const refreshQuestionsBtn = document.getElementById('refreshQuestions');
   const filterTabs = document.getElementById('filterTabs');
   const openList = document.getElementById('openList');
   const summaryText = document.getElementById('summaryText');
@@ -213,8 +214,8 @@
     archived: [],
     lastMood: 'ruhig',
     currentAuthor: 'self',
-    selfName: 'E',
-    partnerName: 'N',
+    selfName: 'N',
+    partnerName: 'E',
     filter: 'all',
     questions: []
   };
@@ -226,14 +227,17 @@
   renderMoods();
   renderFilters();
   renderOpenTopics();
-  renderQuestions();
-  if(!state.questions.length) refreshQuestions();
+  const hasQuestionsUI = questionBox && refreshQuestionsBtn;
+  if(hasQuestionsUI){
+    renderQuestions();
+    if(!state.questions.length) refreshQuestions();
+  }
 
   document.getElementById('saveBtn').addEventListener('click', saveEntry);
-  document.getElementById('refreshQuestions').addEventListener('click', refreshQuestions);
+  if(refreshQuestionsBtn) refreshQuestionsBtn.addEventListener('click', refreshQuestions);
   document.getElementById('copySummary').addEventListener('click', copySummary);
-  selfNameInput.addEventListener('input', () => updateNames('self', selfNameInput.value));
-  partnerNameInput.addEventListener('input', () => updateNames('partner', partnerNameInput.value));
+  if(selfNameInput) selfNameInput.addEventListener('input', () => updateNames('self', selfNameInput.value));
+  if(partnerNameInput) partnerNameInput.addEventListener('input', () => updateNames('partner', partnerNameInput.value));
 
   function load(){
     try{
@@ -253,8 +257,8 @@
     if(!Array.isArray(state.entries)) state.entries = [];
     if(!Array.isArray(state.archived)) state.archived = [];
     if(!Array.isArray(state.questions)) state.questions = [];
-    if(!state.selfName) state.selfName = 'Ich';
-    if(!state.partnerName) state.partnerName = 'Partner';
+    if(!state.selfName) state.selfName = 'N';
+    if(!state.partnerName) state.partnerName = 'E';
     if(!state.currentAuthor) state.currentAuthor = 'self';
     if(!state.filter) state.filter = 'all';
 
@@ -296,15 +300,15 @@
     document.getElementById('energy').value = 5;
     document.getElementById('topic').value = '';
     document.getElementById('talkIntent').value = 'wenn Zeit';
-    selfNameInput.value = state.selfName;
-    partnerNameInput.value = state.partnerName;
+    if(selfNameInput) selfNameInput.value = state.selfName;
+    if(partnerNameInput) partnerNameInput.value = state.partnerName;
   }
 
   function renderAuthorToggle(){
     authorToggle.innerHTML = '';
     const items = [
-      { id:'self', label: state.selfName || 'Ich' },
-      { id:'partner', label: state.partnerName || 'Partner' }
+      { id:'self', label: state.selfName || 'N' },
+      { id:'partner', label: state.partnerName || 'E' }
     ];
     items.forEach(item => {
       const btn = document.createElement('button');
@@ -336,7 +340,7 @@
         state.lastMood = m.id;
         persist();
         renderMoods();
-        refreshQuestions();
+        if(hasQuestionsUI) refreshQuestions();
       });
 
       const icon = document.createElement('div');
@@ -359,8 +363,8 @@
     filterTabs.innerHTML = '';
     const tabs = [
       { value:'all', label:'Alle Einträge' },
-      { value:'self', label: state.selfName || 'Ich' },
-      { value:'partner', label: state.partnerName || 'Partner' }
+      { value:'self', label: state.selfName || 'N' },
+      { value:'partner', label: state.partnerName || 'E' }
     ];
     tabs.forEach(tab => {
       const node = document.createElement('button');
@@ -396,7 +400,7 @@
       openList.appendChild(empty);
       lastUpdate.textContent = 'Keine Einträge';
       summaryText.textContent = 'Noch keine Daten für die Zusammenfassung.';
-      quickInfo.textContent = 'Hier landet dein Kurzupdate für deinen Partner.';
+      quickInfo.textContent = 'Hier landet dein Kurzupdate für E.';
       return;
     }
 
@@ -457,6 +461,7 @@
   }
 
   function refreshQuestions(){
+    if(!hasQuestionsUI || typeof questionPool === 'undefined') return;
     const mood = state.lastMood;
     const pool = questionPool[mood] || questionPool.fallback;
     const shuffled = [...pool].sort(()=>Math.random()-0.5);
@@ -488,7 +493,7 @@
     const entry = {
       id: crypto.randomUUID ? crypto.randomUUID() : `${createdAt}-${Math.random()}`,
       authorType,
-      authorName: authorType === 'partner' ? (state.partnerName || 'Partner') : (state.selfName || 'Ich'),
+      authorName: authorType === 'partner' ? (state.partnerName || 'E') : (state.selfName || 'N'),
       mood,
       moodLabel: moodMeta.label,
       emoji: moodMeta.emoji,
@@ -511,7 +516,7 @@
   }
 
   function buildQuickInfo(entry){
-    if(!entry) return 'Hier landet dein Kurzupdate für deinen Partner.';
+    if(!entry) return 'Hier landet dein Kurzupdate für E.';
     const note = entry.topic ? entry.topic : 'Keine extra Notiz.';
     return `${entry.authorName} fühlt sich ${entry.moodLabel.toLowerCase()} (${entry.energy}/10 Energie). ${note} Wunsch: ${entry.talkIntent}.`;
   }
@@ -528,7 +533,7 @@
   }
 
   function updateNames(type, value){
-    const cleaned = value.trim() || (type === 'partner' ? 'Partner' : 'Ich');
+    const cleaned = value.trim() || (type === 'partner' ? 'E' : 'N');
     if(type === 'self') state.selfName = cleaned;
     if(type === 'partner') state.partnerName = cleaned;
     persist();
