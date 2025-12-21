@@ -195,43 +195,25 @@
   const STORAGE_KEY = 'tandem-checkins-v2';
   const TTL_MS = 14 * 24 * 60 * 60 * 1000;
   const moods = [
-    { id:'ruhig', label:'Ruhig', emoji:'🌿', tone:'ausgeglichen' },
-    { id:'gestresst', label:'Gestresst', emoji:'⚡️', tone:'unter Strom' },
-    { id:'müde', label:'Müde', emoji:'😴', tone:'erschöpft' },
-    { id:'freudig', label:'Freudig', emoji:'✨', tone:'positiv' },
-    { id:'genervt', label:'Genervt', emoji:'🙄', tone:'gereizt' },
-    { id:'dankbar', label:'Dankbar', emoji:'🤍', tone:'zugewandt' },
+    { id:'gut', label:'Gut', emoji:'😊', tone:'es läuft' },
+    { id:'okay', label:'Okay', emoji:'🙂', tone:'im Gleichgewicht' },
+    { id:'zäh', label:'Zäh', emoji:'😕', tone:'braucht Energie' }
   ];
   const questionPool = {
-    ruhig: [
-      'Was hat dir heute Ruhe gegeben?',
-      'Gibt es etwas, das du gern so beibehalten möchtest?',
-      'Welche Kleinigkeit können wir heute teilen?'
+    gut: [
+      'Was war der beste Moment heute?',
+      'Womit kann ich deinen Flow unterstützen?',
+      'Was möchtest du gern teilen?'
     ],
-    gestresst: [
-      'Was frisst gerade die meiste Energie?',
-      'Wobei würdest du dir kurze Unterstützung wünschen?',
-      'Was könnte dir helfen, einmal durchzuatmen?'
+    okay: [
+      'Was hilft dir, so ausgeglichen zu bleiben?',
+      'Gibt es etwas Kleines, das wir heute zusammen machen wollen?',
+      'Worauf freust du dich als Nächstes?'
     ],
-    müde: [
-      'Was hat dich heute erschöpft?',
-      'Was braucht heute keinen Perfektionismus?',
-      'Gibt es etwas, das du verschieben kannst?'
-    ],
-    freudig: [
-      'Was hat dich heute gefreut?',
-      'Wen möchtest du an deiner Freude teilhaben lassen?',
-      'Was können wir davon festhalten?'
-    ],
-    genervt: [
-      'Was nervt dich konkret?',
-      'Braucht es nur Gehör oder eine Lösung?',
-      'Was wäre ein kleiner Schritt, der Druck rausnimmt?'
-    ],
-    dankbar: [
-      'Wofür bist du heute dankbar?',
-      'Möchtest du jemandem Danke sagen?',
-      'Welche Geste hat dich berührt?'
+    zäh: [
+      'Was zieht dir heute Kraft?',
+      'Wie kann ich dich kurz entlasten?',
+      'Was wäre ein kleiner Schritt, der gerade hilft?'
     ],
     fallback: [
       'Welche Überschrift hätte dein Tag?',
@@ -266,7 +248,7 @@
   const clearPhotoBtn = document.getElementById('clearPhoto');
   const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
 
-  const defaultState = { entries: [], archived: [], lastMood: 'ruhig', currentRole: 'princess', filter: null, questions: [] };
+  const defaultState = { entries: [], archived: [], lastMood: 'okay', currentRole: 'princess', filter: null, questions: [] };
   let state = load();
   normalizeState();
   hydrateForm();
@@ -458,7 +440,7 @@
         if(state.filter === 'unread') return !e.readBy[state.currentRole];
         return e.authorRole === state.filter;
       })
-      .sort((a,b)=>b.createdAt-a.createdAt);
+      .sort((a,b)=>a.createdAt-b.createdAt);
 
     if(list.length === 0){
       const empty = document.createElement('div');
@@ -538,7 +520,7 @@
       entryList.appendChild(node);
     });
 
-    const latest = list[0];
+    const latest = list[list.length-1];
     lastUpdate.textContent = 'Letzter Eintrag: ' + formatter.format(latest.createdAt);
   }
 
@@ -577,7 +559,7 @@
   }
 
   function saveEntry(){
-    const mood = state.lastMood || 'ruhig';
+    const mood = state.lastMood || 'okay';
     const moodMeta = moods.find(m => m.id === mood) || moods[0];
     const energy = Number(document.getElementById('energy').value) || 5;
     const topic = document.getElementById('topic').value.trim();
